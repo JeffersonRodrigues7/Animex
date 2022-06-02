@@ -4,10 +4,6 @@ export const api = axios.create({
     baseURL: "http://localhost:3001",
 });
 
-export const apiLogin = async (email: string, password: string) => {
-    return api.post("/users/login", { email, password });
-};
-
 api.interceptors.request.use(function (config) {
     const token = localStorage.getItem("token");
     if (token) {
@@ -17,6 +13,18 @@ api.interceptors.request.use(function (config) {
     return config;
 });
 
+export const apiLogin = async (email: string, password: string) => {
+    return api.post("/login", { email, password });
+};
+
 export const apiRegister = async (userName: string, email: string, password: string) => {
-    return api.post("/users", { userName, email, password });
+    return api.post("/register", { userName, email, password });
+};
+
+export const apiFindUserByUserName = async (userName: string) => {
+    return api.get("/users/userName/:userName", { params: { userName: userName } });
+};
+
+export const apiFindUserByEmail = async (email: string) => {
+    return api.get("/users/email/:email", { params: { email: email } });
 };

@@ -1,6 +1,7 @@
 import * as dotenv from "dotenv";
-dotenv.config();
 import { Sequelize } from "sequelize";
+
+dotenv.config();
 
 export const db = new Sequelize(process.env.DATABASE_NAME!, process.env.DATABASE_USER!, process.env.DATABASE_PASS!, {
     dialect: "mysql",

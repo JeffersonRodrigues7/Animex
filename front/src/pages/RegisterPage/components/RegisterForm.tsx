@@ -2,11 +2,11 @@ import { useState, useContext } from "react";
 import { Form, Button, Alert } from "react-bootstrap";
 import { Formik } from "formik";
 import * as yup from "yup";
-import axios from "axios";
 import bcrypt from "bcryptjs";
 import { FormGroup } from "./FormGroup";
-import { AuthContext } from "../../../contexts/auth";
-import "./styles.css";
+import { AuthContext } from "../../../contexts/contextAuth";
+import { apiFindUserByUserName, apiFindUserByEmail } from "../../../services/api";
+import "./registerFormStyles.css";
 
 const saltRounds = 10;
 
@@ -52,19 +52,14 @@ const scheme = yup.object().shape({
 
 function RegisterForm() {
     //Os três estados abaixo são para o Alerta do formulário
-    const { register } = useContext(AuthContext);
+    const { register, login } = useContext(AuthContext);
     const [show, setShow] = useState(false);
     const [text, setText] = useState("");
     const [variant, setVariant] = useState("success");
 
-    async function verifyUserUsed(user_name: String): Promise<Boolean> {
+    async function verifyUserUsed(user_name: string): Promise<Boolean> {
         try {
-            const res = await axios({
-                method: "get",
-                url: "http://localhost:3001/users/userName/:userName",
-                params: { userName: user_name },
-            });
-            console.log(res);
+            const res = await apiFindUserByUserName(user_name);
             return res.status === 204 ? true : false;
         } catch (error) {
             console.log(error);
@@ -72,36 +67,15 @@ function RegisterForm() {
         }
     }
 
-    async function verifyEmailUsed(user_email: String): Promise<Boolean> {
+    async function verifyEmailUsed(user_email: string): Promise<Boolean> {
         try {
-            const res = await axios({
-                method: "get",
-                url: "http://localhost:3001/users/email/:email",
-                params: { email: user_email },
-            });
-            console.log(res);
+            const res = await apiFindUserByEmail(user_email);
             return res.status === 204 ? true : false;
         } catch (error) {
             console.log(error);
             return false;
         }
     }
-    /*
-    async function createUser(user_name: String, user_email: String, user_password: String): Promise<Boolean> {
-        try {
-            const res = await axios({
-                method: "post",
-                url: "http://localhost:3001/users",
-                data: { userName: user_name, email: user_email, password: user_password },
-            });
-            console.log("RESP", res);
-            return res.status === 201 ? true : false;
-        } catch (error) {
-            console.log("resp");
-            console.error(error);
-            return false;
-        }
-    }*/
 
     const handleSubmit = async (e: any, values: any, resetForm: any) => {
         e.preventDefault();
@@ -114,22 +88,19 @@ function RegisterForm() {
 
         setShow(true);
         setVariant("danger");
-
-        //E-mail e nome de usuário não estão em uso
         if (!userUsed && !emailUsed) {
-            const resPost = await register!(user_name, user_email, user_password);
-            if (resPost) {
-                setVariant("success");
-                setShow(true);
-                setText("Usuário criado com sucesso");
-                //resetForm();
-                setTimeout(function () {
-                    setShow(false);
-                }, 3000);
+            const resRegister = await register!(user_name, user_email, user_password);
+            if (resRegister) {
+                //Se o registro foi feito com sucesso, então vamos fazer o login
+                const resLogin = await login!(user_email, values.user_password);
+
+                if (resLogin !== 0) {
+                    setVariant("warning");
+                    setText("Usuário cadastrado com sucesso, porém, houve uma falha ao logar");
+                }
             } else {
-                setShow(true);
-                setText("Erro ao cadastrar Usuário");
                 setVariant("danger");
+                setText("Erro ao cadastrar Usuário");
             }
         }
 

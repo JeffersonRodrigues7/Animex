@@ -1,14 +1,13 @@
 import express from "express";
 import UserController from "./controllers/UserController";
-import authMiddleware from "./middlewares/auth";
+import authMiddleware from "./middlewares/jwtAuth";
 
 const routes = express.Router();
 
-routes.post("/users", authMiddleware, UserController.create);
-routes.post("/users/login/", UserController.findLogin);
-
-routes.get("/users/:userID", UserController.findOne);
-routes.get("/users/userName/:userName", UserController.findOneByName);
-routes.get("/users/email/:email", UserController.findOneByEmail);
+//UserController
+routes.post("/register", authMiddleware, UserController.create);
+routes.get("/users/userName/:userName", UserController.findByUserName);
+routes.get("/users/email/:email", UserController.findByEmail);
+routes.post("/login", UserController.login);
 
 export { routes };

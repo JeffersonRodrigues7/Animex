@@ -1,9 +1,9 @@
 import { useContext } from "react";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
-import LoginPage from "./pages/LoginPage";
-import HomePage from "./pages/HomePage";
-import { AuthProvider, AuthContext } from "./contexts/auth";
-import RegisterPage from "./pages/RegisterPage";
+import HomePage from "./pages/HomePage/homeIndex";
+import LoginPage from "./pages/LoginPage/loginIndex";
+import RegisterPage from "./pages/RegisterPage/registerIndex";
+import { AuthProvider, AuthContext } from "./contexts/contextAuth";
 
 const AppRoutes = () => {
     const Private = ({ children }: any) => {

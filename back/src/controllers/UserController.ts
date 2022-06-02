@@ -1,16 +1,13 @@
-import express, { Request, Response } from "express";
+import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
 import { UserModel } from "../models/UserModel";
-
-const bcrypt = require("bcryptjs");
-
-export var authenticated: boolean;
+import authConfig from "../config/jwtConfig";
 
 class UserController {
-    async findLogin(req: express.Request, res: express.Response) {
+    async login(req: Request, res: Response) {
         const { email, password } = req.body;
 
-        console.log("aqui");
         try {
             const user: any = await UserModel.findOne({
                 where: {
@@ -22,31 +19,29 @@ class UserController {
                 const match = await bcrypt.compare(password, user.password);
 
                 if (match) {
-                    const id = user.id;
+                    const { id, userName } = user;
                     return res.json({
                         user: {
                             id,
-                            email,
+                            userName,
                         },
-                        token: jwt.sign({ id }, "abc123", {
-                            expiresIn: "7d",
+                        token: jwt.sign({ id }, authConfig.secret, {
+                            expiresIn: authConfig.expiresIn,
                         }),
                     });
                 } else {
                     return res.status(203).send("Senha inválida");
                 }
             } else {
-                authenticated = false;
                 return res.status(204).send("Usuário não encontrado");
             }
         } catch (error: any) {
-            authenticated = false;
             console.error("Erro ao tentar fazer login: ", error);
             return res.send(error.message);
         }
     }
 
-    async findOneByName(req: Request, res: Response) {
+    async findByUserName(req: Request, res: Response) {
         const userName = req.query.userName?.toString();
         try {
             const user = await UserModel.findOne({
@@ -62,7 +57,7 @@ class UserController {
         }
     }
 
-    async findOneByEmail(req: Request, res: Response) {
+    async findByEmail(req: Request, res: Response) {
         const email = req.query.email?.toString();
         try {
             const user = await UserModel.findOne({
@@ -95,7 +90,6 @@ class UserController {
     async update(req: Request, res: Response) {}
     async delete(req: Request, res: Response) {}
     async findAll(req: Request, res: Response) {}
-    async findOne(req: Request, res: Response) {}
 }
 
 export default new UserController();

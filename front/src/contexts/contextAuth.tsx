@@ -1,15 +1,9 @@
 import { createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios, { HeadersDefaults } from "axios";
-import { api, apiLogin, apiRegister } from "../services/api";
-import { promisify } from "util";
-
-interface CommonHeaderProperties extends HeadersDefaults {
-    Authorization: string;
-}
+import { apiLogin, apiRegister } from "../services/api";
 
 export interface AuthContextInterface {
-    user?: String | null;
+    user?: string;
     authenticated?: boolean;
     loading?: boolean;
     login?: (email: string, password: string) => Promise<Number>;
@@ -18,59 +12,43 @@ export interface AuthContextInterface {
 }
 
 export const AuthContext = createContext<AuthContextInterface>({
-    user: null,
+    user: "",
     authenticated: false,
     loading: false,
-    login: async () => 4,
+    login: async () => 3,
     logout: () => {},
     register: async () => false,
 });
 
 export const AuthProvider = ({ children }: any) => {
     const navigate = useNavigate();
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState("");
     const [authenticated, setAuthenticated] = useState(false);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const recoveredUser = localStorage.getItem("user");
-        const token = localStorage.getItem("token");
-
         if (recoveredUser) {
+            setUser(recoveredUser);
             setAuthenticated(true);
-
-            api.interceptors.request.use((config) => {
-                //const token = // Recupere o token aqui;
-                console.log("aqui2", config);
-                config.headers!.Authorization = `Bearer ${token}`;
-                return config;
-            });
-            api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
         }
-        console.log("aqui", api.defaults.headers);
 
         setLoading(false);
     }, []);
 
     const login = async (email: string, password: string): Promise<Number> => {
-        console.log("login", { email, password });
-
         try {
             const res = await apiLogin(email, password);
             if (res.status === 200) {
                 console.log(res.data);
 
-                const userId = res.data.user.id;
+                const userName = res.data.user.userName;
                 const token = res.data.token;
-                /*if (token) {
-                    api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-                }*/
 
-                localStorage.setItem("user", JSON.stringify(userId));
+                localStorage.setItem("user", JSON.stringify(userName));
                 localStorage.setItem("token", token);
 
-                console.log("aqui", api.defaults.headers);
-                setUser(userId);
+                setUser(userName);
                 setAuthenticated(true);
                 navigate("/");
 
@@ -78,46 +56,26 @@ export const AuthProvider = ({ children }: any) => {
             } else if (res.status === 204) return 1;
             else return 2;
         } catch (error) {
-            console.log(error);
+            console.error(error);
             return 3;
         }
-
-        //api.defaults.headers.Authorization = `Bearer ${token}`
-        /*api.interceptors.request.use((config) => {
-            //const token = // Recupere o token aqui;
-            console.log("aqui2", config);
-            config.headers!.Authorization = `Bearer ${token}`;
-            return config;
-        });*/
-
-        //api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     };
 
     const register = async (userName: string, email: string, password: string): Promise<boolean> => {
         try {
             const res = await apiRegister(userName, email, password);
-            if (res.status === 201) {
-                console.log(res.data);
-
-                console.log("registrado: ", api.defaults.headers);
-
-                return true;
-            }
+            if (res.status === 201) return true;
             return false;
         } catch (error) {
-            console.log(error);
+            console.error(error);
             return false;
         }
     };
 
     const logout = () => {
-        console.log("loggout");
         localStorage.removeItem("user");
         localStorage.removeItem("token");
-        api.defaults.headers = {
-            Authorization: "",
-        } as CommonHeaderProperties;
-        setUser(null);
+        setUser("");
         setAuthenticated(false);
         navigate("/login");
     };
