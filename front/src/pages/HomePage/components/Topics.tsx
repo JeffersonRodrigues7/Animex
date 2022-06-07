@@ -1,0 +1,36 @@
+import { useContext } from "react";
+import { Container, Row, Col } from "react-bootstrap";
+import { BsPlusCircleFill } from "react-icons/bs";
+import { AuthContext } from "../../../contexts/contextAuth";
+import TopicsTable from "./TopicsTable";
+import NewTopic from "./NewTopic";
+import "./topicsStyles.css";
+
+const Topics = () => {
+    const { logout, authenticated } = useContext(AuthContext);
+
+    const handleLogout = () => {
+        if (logout) {
+            logout();
+        }
+    };
+
+    return (
+        <>
+            <Container id="container_topics">
+                <Row className="justify-content-md-center">
+                    <Col className="container_column d-none d-sm-block" xxl="2" lg="2" sm="1"></Col>
+                    <Col className="container_column" xxl="8" lg="8" sm="10" xs="12">
+                        <Row>
+                            <NewTopic />
+                        </Row>
+                        <TopicsTable />
+                    </Col>
+                    <Col className="container_column d-none d-sm-block" xxl="2" lg="2" sm="1"></Col>
+                </Row>
+            </Container>
+        </>
+    );
+};
+
+export default Topics;

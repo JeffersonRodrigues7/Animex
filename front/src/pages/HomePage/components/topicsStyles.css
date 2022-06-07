@@ -1,0 +1,61 @@
+#container_topics {
+    max-width: 98%;
+    margin-top: 10px;
+}
+
+.container_column {
+    border: solid;
+    border-width: 1px;
+}
+
+#topics_header {
+    padding: 10px;
+    border: solid;
+    border-width: 1px;
+}
+
+#new_topic_button {
+    margin: 10px 0px 0px 10px;
+    color: black;
+    background-color: white;
+    border: 0px;
+}
+
+#new_topic_button * {
+    border-radius: 0 !important;
+}
+
+#new_topic_icon,
+#new_topic_button {
+    width: auto;
+}
+
+#topics_table {
+    margin-top: 10px;
+}
+
+.topic {
+    padding: 10px 10px 10px 10px;
+    border: solid;
+    border-width: 1px;
+}
+
+.table_text_header {
+    font-size: smaller;
+    font-weight: 400;
+}
+
+.table_text_body,
+.table_text_body_title {
+    font-size: medium;
+}
+
+.table_text_body {
+    text-align: center;
+    font-size: smaller;
+    font-weight: 400;
+}
+
+.post_mobile_extra_information {
+    font-size: x-small;
+}
