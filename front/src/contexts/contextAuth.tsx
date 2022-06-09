@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { apiLogin, apiRegister } from "../services/api";
 
 export interface AuthContextInterface {
+    id?: number;
     user?: string;
     authenticated?: boolean;
     loading?: boolean;
@@ -12,6 +13,7 @@ export interface AuthContextInterface {
 }
 
 export const AuthContext = createContext<AuthContextInterface>({
+    id: 0,
     user: "",
     authenticated: false,
     loading: false,
@@ -22,13 +24,16 @@ export const AuthContext = createContext<AuthContextInterface>({
 
 export const AuthProvider = ({ children }: any) => {
     const navigate = useNavigate();
+    const [id, setId] = useState(0);
     const [user, setUser] = useState("");
     const [authenticated, setAuthenticated] = useState(false);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        const recoveredId = localStorage.getItem("id");
         const recoveredUser = localStorage.getItem("user");
-        if (recoveredUser) {
+        if (recoveredId && recoveredUser) {
+            setId(Number(recoveredId));
             setUser(recoveredUser);
             setAuthenticated(true);
         }
@@ -42,12 +47,15 @@ export const AuthProvider = ({ children }: any) => {
             if (res.status === 200) {
                 console.log(res.data);
 
+                const userId = res.data.user.id;
                 const userName = res.data.user.userName;
                 const token = res.data.token;
 
+                localStorage.setItem("id", JSON.stringify(userId));
                 localStorage.setItem("user", JSON.stringify(userName));
                 localStorage.setItem("token", token);
 
+                setId(Number(userId));
                 setUser(userName);
                 setAuthenticated(true);
                 navigate("/");
@@ -73,12 +81,14 @@ export const AuthProvider = ({ children }: any) => {
     };
 
     const logout = () => {
+        localStorage.removeItem("id");
         localStorage.removeItem("user");
         localStorage.removeItem("token");
+        setId(0);
         setUser("");
         setAuthenticated(false);
         navigate("/login");
     };
 
-    return <AuthContext.Provider value={{ authenticated, user, loading, login, logout, register }}>{children}</AuthContext.Provider>;
+    return <AuthContext.Provider value={{ authenticated, id, user, loading, login, logout, register }}>{children}</AuthContext.Provider>;
 };

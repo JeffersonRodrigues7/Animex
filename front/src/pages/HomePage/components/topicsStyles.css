@@ -59,3 +59,15 @@
 .post_mobile_extra_information {
     font-size: x-small;
 }
+
+#alert_div {
+}
+
+#post_alert,
+#post_alert p {
+    display: inline;
+}
+
+#post_alert {
+    padding: 5px;
+}

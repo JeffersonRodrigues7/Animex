@@ -15,7 +15,7 @@ const scheme = yup.object().shape({
         .string()
         .matches(/^[a-zA-Z]./, "Nome de usuário deve começar com uma letra")
         .min(4, "Nome de usuário deve ter entre 4 a 15 caracteres")
-        .max(15, "Nome de usuário deve ter entre 6 a 15 caracteres")
+        .max(15, "Nome de usuário deve ter entre 4 a 15 caracteres")
         /**.test(
             "userName único",
             "Este nome de usuário já está em uso", // <- key, message

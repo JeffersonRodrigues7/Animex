@@ -13,6 +13,7 @@ api.interceptors.request.use(function (config) {
     return config;
 });
 
+//UserController
 export const apiLogin = async (email: string, password: string) => {
     return api.post("/login", { email, password });
 };
@@ -27,4 +28,9 @@ export const apiFindUserByUserName = async (userName: string) => {
 
 export const apiFindUserByEmail = async (email: string) => {
     return api.get("/users/email/:email", { params: { email: email } });
+};
+
+//PostController
+export const apiCreatePost = async (title: string, text: string, creatorId: number, creatorName: string) => {
+    return api.post("/newpost", { title, text, creatorId, creatorName });
 };
