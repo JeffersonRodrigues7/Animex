@@ -1,36 +1,40 @@
 import axios from "axios";
 
 export const api = axios.create({
-    baseURL: "http://localhost:3001",
+  baseURL: "http://localhost:3001",
 });
 
 api.interceptors.request.use(function (config) {
-    const token = localStorage.getItem("token");
-    if (token) {
-        config.headers!.Authorization = token;
-    }
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers!.Authorization = token;
+  }
 
-    return config;
+  return config;
 });
 
 //UserController
 export const apiLogin = async (email: string, password: string) => {
-    return api.post("/login", { email, password });
+  return api.post("/login", { email, password });
 };
 
 export const apiRegister = async (userName: string, email: string, password: string) => {
-    return api.post("/register", { userName, email, password });
+  return api.post("/register", { userName, email, password });
 };
 
 export const apiFindUserByUserName = async (userName: string) => {
-    return api.get("/users/userName/:userName", { params: { userName: userName } });
+  return api.get("/users/userName/:userName", { params: { userName: userName } });
 };
 
 export const apiFindUserByEmail = async (email: string) => {
-    return api.get("/users/email/:email", { params: { email: email } });
+  return api.get("/users/email/:email", { params: { email: email } });
 };
 
 //PostController
 export const apiCreatePost = async (title: string, text: string, creatorId: number, creatorName: string) => {
-    return api.post("/newpost", { title, text, creatorId, creatorName });
+  return api.post("/newpost", { title, text, creatorId, creatorName });
+};
+
+export const apiListPosts = async () => {
+  return api.post("/list");
 };

@@ -13,5 +13,6 @@ routes.post("/login", UserController.login);
 
 //PostController
 routes.post("/newpost", authMiddleware, UserPost.create);
+routes.post("/list", authMiddleware, UserPost.findAll);
 
 export { routes };
