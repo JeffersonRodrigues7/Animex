@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Table, Image, Pagination } from "react-bootstrap";
+import { PaginationComponent } from "../../generalComponents/Pagination/PaginationComponent";
 import teste from "./teste.png";
-import "./topicsStyles.css";
+import "./topicsTableStyles.css";
 
 interface Props {
   posts: {
@@ -20,38 +21,11 @@ interface Props {
 const TopicsTable = ({ posts }: Props) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(5);
-  const [activePage, setActivePage] = useState(1);
   const postsQtd = posts.length;
-  const totalPages = Math.ceil(postsQtd / postsPerPage);
-  const pages = 3;
 
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
-
-  const paginate = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
-    setActivePage(pageNumber);
-  };
-
-  let subtractPages = activePage > 3 ? 3 : activePage - 1; //gambiarra para fazer com que na paginação mostremos a página ativa mais as 3 páginas anteriores
-  let items = [];
-
-  if (activePage !== 1) {
-    items.push(<Pagination.First key={-1} onClick={() => paginate(1)} />);
-    items.push(<Pagination.Prev key={-2} onClick={() => paginate(activePage - 1)} />);
-  }
-  for (let index = activePage - subtractPages; index <= activePage + pages && index <= totalPages; index++) {
-    items.push(
-      <Pagination.Item key={index} active={index === activePage} onClick={() => paginate(index)}>
-        {index}
-      </Pagination.Item>
-    );
-  }
-  if (activePage < totalPages) {
-    items.push(<Pagination.Next key={-5} onClick={() => paginate(activePage + 1)} />);
-    items.push(<Pagination.Last key={-6} onClick={() => paginate(totalPages)} />);
-  }
   return (
     <>
       <Table responsive striped bordered hover id="topics_table">
@@ -94,9 +68,8 @@ const TopicsTable = ({ posts }: Props) => {
           ))}
         </tbody>
       </Table>
-      <div>
-        <Pagination size="sm">{items}</Pagination>
-      </div>
+
+      <PaginationComponent postsLength={postsQtd} setCurrentPage={setCurrentPage} postsPerPage={postsPerPage}></PaginationComponent>
     </>
   );
 };

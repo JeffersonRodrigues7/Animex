@@ -1,0 +1,15 @@
+#new_topic_button {
+  margin: 10px 0px 0px 10px;
+  color: black;
+  background-color: white;
+  border: 0px;
+}
+
+#post_alert,
+#post_alert p {
+  display: inline;
+}
+
+#post_alert {
+  padding: 5px;
+}

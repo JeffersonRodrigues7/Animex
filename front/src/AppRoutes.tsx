@@ -4,40 +4,41 @@ import HomePage from "./pages/HomePage/homeIndex";
 import LoginPage from "./pages/LoginPage/loginIndex";
 import RegisterPage from "./pages/RegisterPage/registerIndex";
 import { AuthProvider, AuthContext } from "./contexts/contextAuth";
+import { Logout } from "./pages/generalComponents/Logout/Logout";
 
 const AppRoutes = () => {
-    const Private = ({ children }: any) => {
-        const { authenticated, loading } = useContext(AuthContext);
+  const Private = ({ children }: any) => {
+    const { authenticated, loading } = useContext(AuthContext);
+    if (loading) {
+      return <div className="loading">Carregando...</div>;
+    }
 
-        if (loading) {
-            return <div className="loading">Carregando...</div>;
-        }
+    if (!authenticated) {
+      return <Navigate to="/login"></Navigate>;
+    }
 
-        if (!authenticated) {
-            return <Navigate to="/login"></Navigate>;
-        }
+    return children;
+  };
 
-        return children;
-    };
-
-    return (
-        <Router>
-            <AuthProvider>
-                <Routes>
-                    <Route path="/login" element={<LoginPage />} />
-                    <Route
-                        path="/"
-                        element={
-                            <Private>
-                                <HomePage />
-                            </Private>
-                        }
-                    />
-                    <Route path="/register" element={<RegisterPage />}></Route>
-                </Routes>
-            </AuthProvider>
-        </Router>
-    );
+  return (
+    <Router>
+      <AuthProvider>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route
+            path="/"
+            element={
+              <Private>
+                <HomePage />
+              </Private>
+            }
+          />
+          <Route path="/register" element={<RegisterPage />}></Route>
+          <Route path="/logout" element={<Logout />}></Route>
+        </Routes>
+      </AuthProvider>
+    </Router>
+  );
 };
 
 export default AppRoutes;

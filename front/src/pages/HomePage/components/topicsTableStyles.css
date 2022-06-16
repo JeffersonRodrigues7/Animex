@@ -1,0 +1,28 @@
+#topics_table {
+  margin-top: 10px;
+}
+
+.table_text_header,
+.table_text_header_title {
+  font-size: smaller;
+  font-weight: 400;
+}
+
+.table_text_header {
+  text-align: center;
+}
+
+.table_text_body,
+.table_text_body_title {
+  font-size: medium;
+}
+
+.table_text_body {
+  text-align: center;
+  font-size: smaller;
+  font-weight: 400;
+}
+
+.post_mobile_extra_information {
+  font-size: x-small;
+}

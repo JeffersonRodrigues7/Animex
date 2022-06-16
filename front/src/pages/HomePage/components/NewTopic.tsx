@@ -6,7 +6,7 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import { AuthContext } from "../../../contexts/contextAuth";
 import { apiCreatePost } from "../../../services/api";
-import "./topicsStyles.css";
+import "./newTopicStyles.css";
 
 const scheme = yup.object().shape({
   new_topic_modal_title: yup.string().min(3, "O título do post deve conter entre 3 a 30 caracteres").max(30, "O título do post deve conter entre 3 a 30 caracteres").required("Campo obrigatório"),

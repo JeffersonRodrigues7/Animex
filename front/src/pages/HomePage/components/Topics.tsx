@@ -1,6 +1,5 @@
-import { useContext, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
-import { AuthContext } from "../../../contexts/contextAuth";
 import { apiListPosts } from "../../../services/api";
 import TopicsTable from "./TopicsTable";
 import NewTopic from "./NewTopic";
@@ -19,15 +18,7 @@ export interface postsModel {
 }
 
 const Topics = () => {
-  //const postsModel: { id: number; title: string; text: string; creatorId: string; creatorName: string; lastUserPostName: string; replies: number; createdAt: string; updatedAt: string }[];
-
-  const { logout, authenticated } = useContext(AuthContext);
   const [posts, setPosts] = useState<postsModel[]>([]);
-  const handleLogout = () => {
-    if (logout) {
-      logout();
-    }
-  };
 
   useEffect(() => {
     async function fetchPosts() {
@@ -69,7 +60,7 @@ const Topics = () => {
 
   return (
     <>
-      <Container id="container_topics">
+      <Container id="container_topics" className="mt-5">
         <Row className="justify-content-md-center">
           <Col className="container_column d-none d-sm-block" xxl="2" lg="2" sm="1"></Col>
           <Col className="container_column" xxl="8" lg="8" sm="10" xs="12">

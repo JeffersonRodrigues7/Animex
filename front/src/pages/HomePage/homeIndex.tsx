@@ -1,25 +1,21 @@
-import { useContext } from "react";
-import { AuthContext } from "../../contexts/contextAuth";
+import NavbarComponent from "../generalComponents/Navbar/NavbarComponent";
 import Topics from "./components/Topics";
 
 const HomePage = () => {
-    const { logout, authenticated } = useContext(AuthContext);
+  const links: { href: string; text: string }[] = [
+    { href: "/profile", text: "Perfil" },
+    { href: "/logout", text: "Sair" },
+  ];
 
-    const handleLogout = () => {
-        if (logout) {
-            logout();
-        }
-    };
+  return (
+    <>
+      <div id="navbar_component">
+        <NavbarComponent links={links}></NavbarComponent>
+      </div>
 
-    return (
-        <>
-            <h1>Home Page2</h1>
-            <p>{String(authenticated)}</p>
-            <button onClick={handleLogout}>Logout</button>
-
-            <Topics />
-        </>
-    );
+      <Topics />
+    </>
+  );
 };
 
 export default HomePage;
