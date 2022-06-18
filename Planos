@@ -1,0 +1,11 @@
+1. Colocar dados importantes no .env
+
+2. Tirar dados do tipo any
+
+3. Tirar id do localStorage, do jeito que está qualquer um pode mudar o id e 
+acessar o perfil de outra pessoa. Uma idéia seria armazenar outro campo de 
+id aleátorios ao invés do ordenado 1,2,3... que é gerado automaticamente.
+Além disso podiamos encriptar e desencriptar esse id toda vez que ele é usado 
+para acessar dados de perfil etc...
+
+4. Colocar try catch em todos await para retirar erros de promessas não lidadas.

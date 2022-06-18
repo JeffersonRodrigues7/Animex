@@ -18,8 +18,8 @@ export const apiLogin = async (email: string, password: string) => {
   return api.post("/login", { email, password });
 };
 
-export const apiRegister = async (userName: string, email: string, password: string) => {
-  return api.post("/register", { userName, email, password });
+export const apiRegister = async (userName: string, email: string, password: string, userLevel: number, biography: string, profileImage: string) => {
+  return api.post("/register", { userName, email, password, userLevel, biography, profileImage });
 };
 
 export const apiFindUserByUserName = async (userName: string) => {
@@ -28,6 +28,10 @@ export const apiFindUserByUserName = async (userName: string) => {
 
 export const apiFindUserByEmail = async (email: string) => {
   return api.get("/users/email/:email", { params: { email: email } });
+};
+
+export const apiFindUserById = async (id: number) => {
+  return api.post("/users/id", { id });
 };
 
 //PostController

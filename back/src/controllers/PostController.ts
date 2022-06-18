@@ -5,7 +5,7 @@ class PostController {
   async create(req: Request, res: Response) {
     try {
       const { title, text, creatorId, creatorName } = req.body;
-      console.log(req.body);
+
       const post = await PostModel.create({
         title,
         text,

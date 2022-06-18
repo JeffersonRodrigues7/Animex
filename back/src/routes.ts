@@ -10,6 +10,7 @@ routes.post("/register", UserController.create);
 routes.get("/users/userName/:userName", UserController.findByUserName);
 routes.get("/users/email/:email", UserController.findByEmail);
 routes.post("/login", UserController.login);
+routes.post("/users/id", authMiddleware, UserController.findById);
 
 //PostController
 routes.post("/newpost", authMiddleware, UserPost.create);

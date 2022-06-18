@@ -6,6 +6,7 @@ import bcrypt from "bcryptjs";
 import { FormGroup } from "./FormGroup";
 import { AuthContext } from "../../../contexts/contextAuth";
 import { apiFindUserByUserName, apiFindUserByEmail } from "../../../services/api";
+import profile_default_image from "../../../other/imgs/profile_default_image.png";
 import "./registerFormStyles.css";
 
 const saltRounds = 10;
@@ -86,15 +87,24 @@ function RegisterForm() {
     const userUsed = await verifyUserUsed(user_name);
     const emailUsed = await verifyEmailUsed(user_email);
 
-    setShow(true);
     setVariant("danger");
     if (!userUsed && !emailUsed) {
-      const resRegister = await register!(user_name, user_email, user_password);
+      const userLevel = 0;
+      const biography = "";
+      const profileImage = profile_default_image;
+
+      //console.log(profile_default_image_buffer);
+
+      const resRegister = await register!(user_name, user_email, user_password, userLevel, biography, profileImage);
+      setShow(true);
       if (resRegister) {
         //Se o registro foi feito com sucesso, então vamos fazer o login
         const resLogin = await login!(user_email, values.user_password);
-
-        if (resLogin !== 0) {
+        console.log(resLogin);
+        if (resLogin === 0) {
+          setVariant("success");
+          setText("Usuário cadastrado com sucesso, você será redirecionado para a tela principal");
+        } else {
           setVariant("warning");
           setText("Usuário cadastrado com sucesso, porém, houve uma falha ao logar");
         }

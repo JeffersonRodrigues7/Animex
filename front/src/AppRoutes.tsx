@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-d
 import HomePage from "./pages/HomePage/homeIndex";
 import LoginPage from "./pages/LoginPage/loginIndex";
 import RegisterPage from "./pages/RegisterPage/registerIndex";
+import ProfilePage from "./pages/ProfilePage/profileIndex";
 import { AuthProvider, AuthContext } from "./contexts/contextAuth";
 import { Logout } from "./pages/generalComponents/Logout/Logout";
 
@@ -35,6 +36,14 @@ const AppRoutes = () => {
           />
           <Route path="/register" element={<RegisterPage />}></Route>
           <Route path="/logout" element={<Logout />}></Route>
+          <Route
+            path="/profile"
+            element={
+              <Private>
+                <ProfilePage />
+              </Private>
+            }
+          />
         </Routes>
       </AuthProvider>
     </Router>

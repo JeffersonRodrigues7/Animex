@@ -9,7 +9,7 @@ export interface AuthContextInterface {
   loading?: boolean;
   login?: (email: string, password: string) => Promise<Number>;
   logout?: () => void;
-  register?: (userName: string, email: string, password: string) => Promise<boolean>;
+  register?: (userName: string, email: string, password: string, userLevel: number, biography: string, profileImage: string) => Promise<boolean>;
 }
 
 export const AuthContext = createContext<AuthContextInterface>({
@@ -69,9 +69,9 @@ export const AuthProvider = ({ children }: any) => {
     }
   };
 
-  const register = async (userName: string, email: string, password: string): Promise<boolean> => {
+  const register = async (userName: string, email: string, password: string, userLevel: number, biography: string, profileImage: string): Promise<boolean> => {
     try {
-      const res = await apiRegister(userName, email, password);
+      const res = await apiRegister(userName, email, password, userLevel, biography, profileImage);
       if (res.status === 201) return true;
       return false;
     } catch (error) {

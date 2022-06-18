@@ -1,0 +1,9 @@
+#container_topics {
+  max-width: 98%;
+  margin-top: 10px;
+}
+
+.container_column {
+  border: solid;
+  border-width: 1px;
+}

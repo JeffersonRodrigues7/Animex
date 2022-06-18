@@ -3,6 +3,9 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { UserModel } from "../models/UserModel";
 import authConfig from "../config/jwtConfig";
+const imageToBase64 = require("image-to-base64");
+
+const profile_default_image_path = __dirname + "\\..\\static\\profile_default_image.jpg";
 
 class UserController {
   async login(req: Request, res: Response) {
@@ -72,13 +75,49 @@ class UserController {
     }
   }
 
+  async findById(req: Request, res: Response) {
+    const { id } = req.body;
+    try {
+      const user: any = await UserModel.findOne({
+        where: {
+          id: id,
+        },
+      });
+
+      if (user) {
+        const { userName, email, biography, profileImage } = user;
+
+        return res.json({
+          user: {
+            id,
+            userName,
+            email,
+            biography,
+            profileImage,
+          },
+        });
+      }
+
+      res.status(204).send("Usuário não encontrado");
+    } catch (error: any) {
+      console.error("Erro ao encontrar dados de usuário: ", error);
+      return res.send(error.message);
+    }
+  }
+
   async create(req: Request, res: Response) {
     try {
-      const { userName, email, password } = req.body;
+      const { userName, email, password, userLevel, biography, profileImage } = req.body;
+
+      const default_profile_image = await imageToBase64(profile_default_image_path);
+
       const user = await UserModel.create({
         userName,
         email,
         password,
+        userLevel,
+        biography,
+        profileImage: default_profile_image,
       });
       return res.status(201).json(user);
     } catch (error: any) {
