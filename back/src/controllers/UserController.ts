@@ -7,6 +7,10 @@ const imageToBase64 = require("image-to-base64");
 
 const profile_default_image_path = __dirname + "\\..\\static\\profile_default_image.jpg";
 
+interface MulterRequest extends Request {
+  file: any;
+}
+
 class UserController {
   async login(req: Request, res: Response) {
     const { email, password } = req.body;
@@ -126,7 +130,30 @@ class UserController {
     }
   }
 
-  async update(req: Request, res: Response) {}
+  async update(req: Request, res: Response) {
+    const file = (req as MulterRequest).file;
+    const userId = Number(req.body.userId);
+
+    console.log(file.buffer);
+    const newProfileImage = Buffer.from(file.buffer).toString("base64");
+
+    try {
+      const user = await UserModel.update(
+        {
+          profileImage: newProfileImage,
+        },
+        {
+          where: {
+            id: userId,
+          },
+        }
+      );
+      return user ? res.status(204).send() : res.status(200).json(user);
+    } catch (error: any) {
+      console.error("Erro ao fazer update de foto de perfil: ", error);
+      return res.send(error.message);
+    }
+  }
   async delete(req: Request, res: Response) {}
   async findAll(req: Request, res: Response) {}
 }

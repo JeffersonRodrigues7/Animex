@@ -34,6 +34,14 @@ export const apiFindUserById = async (id: number) => {
   return api.post("/users/id", { id });
 };
 
+export const apiUpdatedProfile = async (profileImage: FormData) => {
+  return api.post("/update", profileImage, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};
+
 //PostController
 export const apiCreatePost = async (title: string, text: string, creatorId: number, creatorName: string) => {
   return api.post("/newpost", { title, text, creatorId, creatorName });
