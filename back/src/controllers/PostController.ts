@@ -13,7 +13,7 @@ class PostController {
         text,
         lastUserPostName: creatorName,
         replies: 0,
-        creatorId: creatorId,
+        creatorId,
       });
       return res.status(201).json(post);
     } catch (error: any) {
@@ -24,7 +24,10 @@ class PostController {
 
   async findAll(req: Request, res: Response) {
     try {
-      const posts = await PostModel.findAll({ order: [["updatedAt", "DESC"]], include: { model: UserModel, attributes: ["id", "userName", "profileImage"] } });
+      const posts = await PostModel.findAll({
+        order: [["updatedAt", "DESC"]],
+        include: { model: UserModel, attributes: ["id", "userName", "profileImage"] },
+      });
 
       return posts ? res.status(200).json(posts) : res.status(204).send("Nenhum post para listar");
     } catch (error: any) {

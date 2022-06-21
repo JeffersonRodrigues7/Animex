@@ -48,5 +48,5 @@ export const apiCreatePost = async (title: string, text: string, creatorId: numb
 };
 
 export const apiListPosts = async () => {
-  return api.post("/list");
+  return api.post("/listPosts");
 };

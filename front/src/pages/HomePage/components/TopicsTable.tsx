@@ -1,6 +1,6 @@
-import { userInfo } from "os";
 import { useState } from "react";
-import { Table, Image, Pagination } from "react-bootstrap";
+import { Table, Image, Nav } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import { PaginationComponent } from "../../generalComponents/Pagination/PaginationComponent";
 import teste from "./teste.png";
 import "./topicsTableStyles.css";
@@ -20,6 +20,7 @@ interface Props {
 }
 
 const TopicsTable = ({ posts }: Props) => {
+  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(5);
   const postsQtd = posts.length;
@@ -27,6 +28,12 @@ const TopicsTable = ({ posts }: Props) => {
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
+
+  const handleTopicClicked = (e: any) => {
+    const postClickedTitle: string = e.target.text;
+    const postClickedId: string = e.target.id;
+    navigate(`/topic/${postClickedTitle}/${postClickedId}`);
+  };
 
   return (
     <>
@@ -54,7 +61,9 @@ const TopicsTable = ({ posts }: Props) => {
                 <Image className="table_image" src={post.user.profileImage} alt={post.user.userName} />
               </td>
               <td className="table_text_body_title" style={{ width: "70.00%" }}>
-                <div>{post.title}</div>
+                <Nav.Link id={post.id} className="table_text_body_title_link" onClick={(e) => handleTopicClicked(e)}>
+                  {post.title}
+                </Nav.Link>
                 <div className="post_mobile_extra_information d-block d-sm-none">
                   Criador por: {post.user.userName} | Respostas: {post.replies} | Último post por: {post.lastUserPostName}, {post.updatedAt}
                 </div>

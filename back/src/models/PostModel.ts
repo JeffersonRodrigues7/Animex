@@ -32,4 +32,8 @@ PostModel.belongsTo(UserModel, {
   foreignKey: "creatorId",
 });
 
+UserModel.hasMany(PostModel, {
+  foreignKey: "creatorId",
+});
+
 export { PostModel };

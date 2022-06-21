@@ -1,7 +1,8 @@
-import express from "express";
+import express, { Router } from "express";
 import UserController from "./controllers/UserController";
-import UserPost from "./controllers/PostController";
+import PostController from "./controllers/PostController";
 import authMiddleware from "./middlewares/jwtAuth";
+import CommentController from "./controllers/CommentController";
 const multer = require("multer");
 
 const upload = multer({ storage: multer.memoryStorage() });
@@ -17,7 +18,11 @@ routes.post("/users/id", authMiddleware, UserController.findById);
 routes.post("/update", authMiddleware, upload.single("profileImage"), UserController.update);
 
 //PostController
-routes.post("/newpost", authMiddleware, UserPost.create);
-routes.post("/list", authMiddleware, UserPost.findAll);
+routes.post("/newpost", authMiddleware, PostController.create);
+routes.post("/listPosts", authMiddleware, PostController.findAll);
+
+//CommentController
+routes.post("/newcomment", authMiddleware, CommentController.create);
+routes.post("/listComments", authMiddleware, CommentController.findAll);
 
 export { routes };

@@ -38,7 +38,7 @@ const AppRoutes = () => {
             }
           />
           <Route
-            path="/topic"
+            path="/topic/:topicTitle/:topicId"
             element={
               <Private>
                 <TopicPage />

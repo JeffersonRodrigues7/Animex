@@ -17,6 +17,13 @@
   font-size: medium;
 }
 
+.table_text_body_title_link:link {
+  display: inline;
+  color: black;
+  width: fit-content;
+  padding: 0px;
+}
+
 .table_image {
   width: 45px;
   height: 45px;
