@@ -13,3 +13,5 @@ para acessar dados de perfil etc...
 5. Colocar tela/marca de carregando em partes que ficamos esperando
 
 6. Tratamento de fotos antes de armazenar no banco de dados
+
+7. Padronizar exports(coloca components para export default)

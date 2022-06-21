@@ -3,6 +3,7 @@ import { Container, Row, Col } from "react-bootstrap";
 import { apiListPosts } from "../../../services/api";
 import TopicsTable from "./TopicsTable";
 import NewTopic from "./NewTopic";
+import { Buffer } from "buffer";
 import "./topicsStyles.css";
 
 export interface postsModel {
@@ -20,6 +21,12 @@ export interface postsModel {
 const Topics = () => {
   const [posts, setPosts] = useState<postsModel[]>([]);
 
+  const handleUserImage = (image: Buffer) => {
+    const base64Flag = "data:image/jpg;base64,";
+    const b64Image = Buffer.from(image).toString();
+    return base64Flag + b64Image;
+  };
+
   useEffect(() => {
     async function fetchPosts() {
       try {
@@ -27,6 +34,8 @@ const Topics = () => {
         const postListData = postList.data;
 
         postListData.map((post: any) => {
+          post.user.profileImage = handleUserImage(post.user.profileImage);
+
           var dateNow = new Date();
           var lastUpdated = new Date(post.updatedAt);
           var duration = dateNow.valueOf() - lastUpdated.valueOf();

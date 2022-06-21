@@ -1,3 +1,4 @@
+import { userInfo } from "os";
 import { useState } from "react";
 import { Table, Image, Pagination } from "react-bootstrap";
 import { PaginationComponent } from "../../generalComponents/Pagination/PaginationComponent";
@@ -26,6 +27,7 @@ const TopicsTable = ({ posts }: Props) => {
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
+
   return (
     <>
       <Table responsive striped bordered hover id="topics_table">
@@ -49,12 +51,12 @@ const TopicsTable = ({ posts }: Props) => {
           {currentPosts.map((post: any) => (
             <tr key={post.id}>
               <td className="table_text_body d-none d-sm-table-cell" style={{ width: "10.00%" }}>
-                <Image src={teste} alt="..." />
+                <Image className="table_image" src={post.user.profileImage} alt={post.user.userName} />
               </td>
               <td className="table_text_body_title" style={{ width: "70.00%" }}>
                 <div>{post.title}</div>
                 <div className="post_mobile_extra_information d-block d-sm-none">
-                  Criador por: {post.creatorName} | Respostas: {post.replies} | Último post por: {post.lastUserPostName}, {post.updatedAt}
+                  Criador por: {post.user.userName} | Respostas: {post.replies} | Último post por: {post.lastUserPostName}, {post.updatedAt}
                 </div>
               </td>
               <td className="table_text_body d-none d-sm-table-cell" style={{ width: "10.00%" }}>

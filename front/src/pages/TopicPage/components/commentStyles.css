@@ -1,0 +1,21 @@
+.comment_profile_image {
+  width: 55px;
+  height: 55px;
+}
+
+.comment_profile_userName,
+.comment_time {
+  display: inline;
+  margin-left: 10px;
+  vertical-align: top;
+}
+
+.comment_quote {
+  display: inline;
+  margin-right: 10px;
+  float: right;
+}
+
+.comment_text {
+  margin-bottom: 20px;
+}

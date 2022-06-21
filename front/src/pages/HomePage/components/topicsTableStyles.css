@@ -17,6 +17,11 @@
   font-size: medium;
 }
 
+.table_image {
+  width: 45px;
+  height: 45px;
+}
+
 .table_text_body {
   text-align: center;
   font-size: smaller;

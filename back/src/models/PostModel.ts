@@ -1,5 +1,6 @@
 import { DataTypes } from "sequelize";
 import { db } from "../database/db-connection";
+import { UserModel } from "./UserModel";
 
 const PostModel = db.define("post", {
   id: {
@@ -16,14 +17,6 @@ const PostModel = db.define("post", {
     type: DataTypes.TEXT("long"),
     allowNull: false,
   },
-  creatorId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  creatorName: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
   lastUserPostName: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -32,6 +25,11 @@ const PostModel = db.define("post", {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
+});
+
+PostModel.belongsTo(UserModel, {
+  constraints: true,
+  foreignKey: "creatorId",
 });
 
 export { PostModel };

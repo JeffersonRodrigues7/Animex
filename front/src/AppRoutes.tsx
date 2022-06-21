@@ -4,6 +4,7 @@ import HomePage from "./pages/HomePage/homeIndex";
 import LoginPage from "./pages/LoginPage/loginIndex";
 import RegisterPage from "./pages/RegisterPage/registerIndex";
 import ProfilePage from "./pages/ProfilePage/profileIndex";
+import TopicPage from "./pages/TopicPage/topicIndex";
 import { AuthProvider, AuthContext } from "./contexts/contextAuth";
 import { Logout } from "./pages/generalComponents/Logout/Logout";
 
@@ -25,7 +26,9 @@ const AppRoutes = () => {
     <Router>
       <AuthProvider>
         <Routes>
+          <Route path="/register" element={<RegisterPage />}></Route>
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/logout" element={<Logout />}></Route>
           <Route
             path="/"
             element={
@@ -34,8 +37,14 @@ const AppRoutes = () => {
               </Private>
             }
           />
-          <Route path="/register" element={<RegisterPage />}></Route>
-          <Route path="/logout" element={<Logout />}></Route>
+          <Route
+            path="/topic"
+            element={
+              <Private>
+                <TopicPage />
+              </Private>
+            }
+          />
           <Route
             path="/profile"
             element={
