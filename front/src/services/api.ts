@@ -47,8 +47,12 @@ export const apiCreatePost = async (title: string, text: string, creatorId: numb
   return api.post("/newpost", { title, text, creatorId, creatorName });
 };
 
-export const apiListPosts = async () => {
-  return api.post("/listPosts");
+export const apiListPosts = async (offset: number, limit: number) => {
+  return api.post("/listPosts", { offset, limit });
+};
+
+export const apiQtdPosts = async () => {
+  return api.post("/qtdPosts");
 };
 
 //CommentController

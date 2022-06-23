@@ -1,39 +1,68 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Table, Image, Nav } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { Buffer } from "buffer";
+import { formatedData } from "../../../services/usefulFunctions";
+import { apiListPosts, apiQtdPosts } from "../../../services/api";
 import { PaginationComponent } from "../../generalComponents/Pagination/PaginationComponent";
-import teste from "./teste.png";
 import "./topicsTableStyles.css";
 
-interface Props {
-  posts: {
-    id: number;
-    title: string;
-    text: string;
-    creatorId: string;
-    creatorName: string;
-    lastUserPostName: string;
-    replies: number;
-    createdAt: string;
-    updatedAt: string;
-  }[];
+export interface postsModel {
+  id: number;
+  title: string;
+  text: string;
+  creatorId: string;
+  creatorName: string;
+  lastUserPostName: string;
+  replies: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
-const TopicsTable = ({ posts }: Props) => {
+const TopicsTable = () => {
   const navigate = useNavigate();
-  const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage] = useState(5);
-  const postsQtd = posts.length;
 
-  const indexOfLastPost = currentPage * postsPerPage;
-  const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
+  const [posts, setPosts] = useState<postsModel[]>([]);
+  const [postsQtd, setPostsQtd] = useState(0);
+  const [postsPerPage] = useState(5);
+
+  const fetchPosts = async (pageNumber: number) => {
+    var offset = pageNumber * postsPerPage - postsPerPage;
+
+    try {
+      const qtdPosts = await apiQtdPosts();
+      setPostsQtd(qtdPosts.data);
+
+      const postList = await apiListPosts(offset, postsPerPage);
+      const postListData = postList.data;
+      console.log(postListData);
+
+      postListData.map((post: any) => {
+        post.user.profileImage = handleUserImage(post.user.profileImage);
+        post.updatedAt = formatedData(post.updatedAt);
+      });
+
+      setPosts(postListData);
+    } catch (e: any) {
+      console.log("Erro ao listar posts", e);
+    }
+  };
 
   const handleTopicClicked = (e: any) => {
     const postClickedTitle: string = e.target.text;
     const postClickedId: string = e.target.id;
     navigate(`/topic/${postClickedTitle}/${postClickedId}`);
   };
+
+  const handleUserImage = (image: Buffer) => {
+    const base64Flag = "data:image/jpg;base64,";
+    const b64Image = Buffer.from(image).toString();
+    return base64Flag + b64Image;
+  };
+
+  useEffect(() => {
+    fetchPosts(1);
+  }, []);
 
   return (
     <>
@@ -55,7 +84,7 @@ const TopicsTable = ({ posts }: Props) => {
           </tr>
         </thead>
         <tbody id="topics_table_body">
-          {currentPosts.map((post: any) => (
+          {posts.map((post: any) => (
             <tr key={post.id}>
               <td className="table_text_body d-none d-sm-table-cell" style={{ width: "10.00%" }}>
                 <Image className="table_image" src={post.user.profileImage} alt={post.user.userName} />
@@ -80,7 +109,7 @@ const TopicsTable = ({ posts }: Props) => {
         </tbody>
       </Table>
 
-      <PaginationComponent postsLength={postsQtd} setCurrentPage={setCurrentPage} postsPerPage={postsPerPage}></PaginationComponent>
+      <PaginationComponent postsLength={postsQtd} fetchPosts={fetchPosts} postsPerPage={postsPerPage}></PaginationComponent>
     </>
   );
 };

@@ -20,6 +20,7 @@ routes.post("/update", authMiddleware, upload.single("profileImage"), UserContro
 //PostController
 routes.post("/newpost", authMiddleware, PostController.create);
 routes.post("/listPosts", authMiddleware, PostController.findAll);
+routes.post("/qtdPosts", authMiddleware, PostController.findQtdPosts);
 
 //CommentController
 routes.post("/newcomment", authMiddleware, CommentController.create);

@@ -4,18 +4,18 @@ import "./paginationComponentStyles.css";
 
 interface Props {
   postsLength: number;
-  setCurrentPage: Function;
+  fetchPosts: Function;
   postsPerPage: number;
 }
 
-export const PaginationComponent = ({ postsLength, setCurrentPage, postsPerPage }: Props) => {
+export const PaginationComponent = ({ postsLength, fetchPosts, postsPerPage }: Props) => {
   const [activePage, setActivePage] = useState(1);
   const totalPages = Math.ceil(postsLength / postsPerPage);
   const pages = 3;
 
   const paginate = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
     setActivePage(pageNumber);
+    fetchPosts(pageNumber);
   };
 
   let subtractPages = activePage > 3 ? 3 : activePage - 1; //gambiarra para fazer com que na paginação mostremos a página ativa mais as 3 páginas anteriores
