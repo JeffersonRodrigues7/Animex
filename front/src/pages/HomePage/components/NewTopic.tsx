@@ -4,8 +4,9 @@ import { Button, Modal, Form, Alert } from "react-bootstrap";
 import { BsPlusCircleFill } from "react-icons/bs";
 import { Formik } from "formik";
 import * as yup from "yup";
+import EditorComponent from "../../generalComponents/Editor/EditorComponent";
 import { AuthContext } from "../../../contexts/contextAuth";
-import { apiCreatePost } from "../../../services/api";
+import { apiCreatePost, apiCreateComment } from "../../../services/api";
 import "./newTopicStyles.css";
 
 const scheme = yup.object().shape({
@@ -13,6 +14,8 @@ const scheme = yup.object().shape({
 });
 
 const NewTopic = () => {
+  const [content, setContent] = useState<string>("");
+
   const navigate = useNavigate();
   const [show, setShow] = useState(false);
   const [newTopic, setNewTopic] = useState(false);
@@ -23,13 +26,24 @@ const NewTopic = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  async function createPost(title: string, text: string, userId: number, userName: string): Promise<Boolean> {
+  async function createPost(title: string, text: string, userId: number, userName: string): Promise<Number> {
     try {
-      const res = await apiCreatePost(title, text, userId, userName);
-      return res.status === 201 ? true : false;
+      const resPost = await apiCreatePost(title, text, userId, userName);
+      console.log(resPost.data);
+      if (resPost.status === 201) {
+        const resComment = await apiCreateComment(content, resPost.data.id, userId);
+        if (resComment.status === 201) {
+          navigate(`/topic/${resPost.data.title}/${resPost.data.id}`);
+          return 0;
+        } else {
+          return 1;
+        }
+      } else {
+        return 2;
+      }
     } catch (error) {
       console.log(error);
-      return false;
+      return 3;
     }
   }
 
@@ -44,10 +58,16 @@ const NewTopic = () => {
 
     setNewTopic(true);
     setVariant("success");
-    if (postResult) {
+    if (postResult === 0) {
       resetForm();
-
       setNewTopicText("Post cadastrado com sucesso");
+    } else if (postResult === 1) {
+      resetForm();
+      setVariant("warning");
+      setNewTopicText("Post cadastrado com sucesso, mas houve um erro ao criar o comentário");
+    } else if (postResult === 2) {
+      setVariant("danger");
+      setNewTopicText("Não foi possível criar novo tópico");
     } else {
       setVariant("danger");
       setNewTopicText("Erro ao cadastrar novo tópico");
@@ -94,8 +114,7 @@ const NewTopic = () => {
                   <Form.Control.Feedback type="invalid">{errors.new_topic_modal_title}</Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="new_topic_modal_text">
-                  <Form.Label>Conteúdo</Form.Label>
-                  <Form.Control as="textarea" rows={6} type="text" name="new_topic_modal_text" onChange={handleChange} value={values.new_topic_modal_text} />
+                  <EditorComponent setContent={setContent} />
                 </Form.Group>
                 <Button variant="primary" type="submit" disabled={!(isValid && dirty)}>
                   Registrar

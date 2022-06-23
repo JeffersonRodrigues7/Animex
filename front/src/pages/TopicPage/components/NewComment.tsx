@@ -1,13 +1,10 @@
 import { useState } from "react";
 import { Button, Form, Alert } from "react-bootstrap";
 import { Formik } from "formik";
-import { EditorState, ContentState, convertToRaw } from "draft-js";
-import { Editor } from "react-draft-wysiwyg";
-import htmlToDraft from "html-to-draftjs";
-import draftToHtml from "draftjs-to-html";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import EditorComponent from "../../generalComponents/Editor/EditorComponent";
 import { apiCreateComment } from "../../../services/api";
 import "./newCommentStyles.css";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 interface Props {
   postId: number;
@@ -15,7 +12,6 @@ interface Props {
 }
 
 const NewComment = ({ postId, userId }: Props) => {
-  const [editorState, setEditorState] = useState<EditorState>(EditorState.createEmpty());
   const [content, setContent] = useState<string>("");
 
   const [newComment, setNewComment] = useState(false);
@@ -43,15 +39,9 @@ const NewComment = ({ postId, userId }: Props) => {
   const handleSubmit = async (e: any, resetForm: any) => {
     e.preventDefault();
     var result: number = 0;
-    const text: string = content;
-    if (text.trim() === "") {
-      console.log("here");
-    }
-
-    console.log(text);
 
     try {
-      const commentResult = await apiCreateComment(text, postId, userId);
+      const commentResult = await apiCreateComment(content, postId, userId);
       if (commentResult.status === 201) {
         resetForm();
       } else {
@@ -71,17 +61,7 @@ const NewComment = ({ postId, userId }: Props) => {
         {({ resetForm }) => (
           <Form onSubmit={(e) => handleSubmit(e, resetForm)}>
             <Form.Group className="mb-3" controlId="new_comment_text">
-              <Editor
-                placeholder="Novo comentário"
-                editorState={editorState}
-                toolbarClassName="toolbarClassName"
-                wrapperClassName="wrapperClassName"
-                editorClassName="editorClassName"
-                onEditorStateChange={(newState) => {
-                  setEditorState(newState);
-                  setContent(draftToHtml(convertToRaw(newState.getCurrentContent())));
-                }}
-              />
+              <EditorComponent setContent={setContent} />
             </Form.Group>
             <Button variant="primary" type="submit">
               Enviar
