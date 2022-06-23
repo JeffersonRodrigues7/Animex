@@ -1,0 +1,8 @@
+#comment_alert,
+#comment_alert p,
+#alert_div {
+  display: inline;
+  width: fit-content;
+  height: fit-content;
+  padding: 5px;
+}

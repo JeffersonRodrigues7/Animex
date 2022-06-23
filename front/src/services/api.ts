@@ -50,3 +50,12 @@ export const apiCreatePost = async (title: string, text: string, creatorId: numb
 export const apiListPosts = async () => {
   return api.post("/listPosts");
 };
+
+//CommentController
+export const apiCreateComment = async (text: string, postId: number, userId: number) => {
+  return api.post("/newcomment", { text, postId, userId });
+};
+
+export const apiListComments = async (id: number) => {
+  return api.post("/listComments", { id });
+};

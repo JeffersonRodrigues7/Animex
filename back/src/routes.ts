@@ -23,6 +23,6 @@ routes.post("/listPosts", authMiddleware, PostController.findAll);
 
 //CommentController
 routes.post("/newcomment", authMiddleware, CommentController.create);
-routes.post("/listComments", authMiddleware, CommentController.findAll);
+routes.post("/listComments", authMiddleware, CommentController.findComments);
 
 export { routes };

@@ -11,7 +11,6 @@ const TopicPageComponent = () => {
           <Row>
             <Comment></Comment>
             <hr></hr>
-            <Comment></Comment>
           </Row>
         </Col>
         <Col className="container_column d-none d-sm-block" xxl="2" lg="2" sm="1"></Col>

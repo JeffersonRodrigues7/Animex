@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { apiListPosts } from "../../../services/api";
+import { formatedData } from "../../../services/usefulFunctions";
 import TopicsTable from "./TopicsTable";
 import NewTopic from "./NewTopic";
 import { Buffer } from "buffer";
@@ -35,28 +36,7 @@ const Topics = () => {
 
         postListData.map((post: any) => {
           post.user.profileImage = handleUserImage(post.user.profileImage);
-
-          var dateNow = new Date();
-          var lastUpdated = new Date(post.updatedAt);
-          var duration = dateNow.valueOf() - lastUpdated.valueOf();
-
-          const days = Math.floor(duration / (24 * 60 * 60 * 1000));
-          const daysms = duration % (24 * 60 * 60 * 1000);
-          const hours = Math.floor(daysms / (60 * 60 * 1000));
-          const hoursms = duration % (60 * 60 * 1000);
-          const minutes = Math.floor(hoursms / (60 * 1000));
-          const minutesms = duration % (60 * 1000);
-          const sec = Math.floor(minutesms / 1000);
-
-          if (days > 0) {
-            post.updatedAt = days + " dias atrás";
-          } else if (hours > 0) {
-            post.updatedAt = hours + " horas atrás";
-          } else if (minutes > 0) {
-            post.updatedAt = minutes + " minutos atrás";
-          } else {
-            post.updatedAt = sec + " segundos atrás";
-          }
+          post.updatedAt = formatedData(post.updatedAt);
         });
         setPosts(postListData);
       } catch (e: any) {

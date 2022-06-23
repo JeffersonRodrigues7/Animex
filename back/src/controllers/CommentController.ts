@@ -21,9 +21,14 @@ class CommentController {
     }
   }
 
-  async findAll(req: Request, res: Response) {
+  async findComments(req: Request, res: Response) {
+    const { id } = req.body;
+
     try {
       const comments = await CommentModel.findAll({
+        where: {
+          postId: id,
+        },
         order: [["createdAt", "ASC"]],
         include: [
           { model: PostModel, attributes: ["text", "createdAt"] },
