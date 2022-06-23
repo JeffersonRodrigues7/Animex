@@ -22,13 +22,15 @@ class CommentController {
   }
 
   async findComments(req: Request, res: Response) {
-    const { id } = req.body;
+    const { id, offset, limit } = req.body;
 
     try {
       const comments = await CommentModel.findAll({
         where: {
           postId: id,
         },
+        offset: offset,
+        limit: limit,
         order: [["createdAt", "ASC"]],
         include: [
           { model: PostModel, attributes: ["text", "createdAt"] },
@@ -39,6 +41,21 @@ class CommentController {
       return comments ? res.status(200).json(comments) : res.status(204).send("Nenhum comentário para listar");
     } catch (error: any) {
       console.error("Erro ao listar comentários: ", error);
+      return res.send(error.message);
+    }
+  }
+
+  async findQtdComments(req: Request, res: Response) {
+    const { id } = req.body;
+
+    try {
+      const commentslength = await CommentModel.count({
+        where: { postId: id },
+      });
+
+      return commentslength ? res.status(200).json(commentslength) : res.status(204).send("Nenhum comentário para contar");
+    } catch (error: any) {
+      console.error("Erro ao contar qtd de comentários: ", error);
       return res.send(error.message);
     }
   }

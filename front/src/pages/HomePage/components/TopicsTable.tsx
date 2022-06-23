@@ -109,7 +109,7 @@ const TopicsTable = () => {
         </tbody>
       </Table>
 
-      <PaginationComponent postsLength={postsQtd} fetchPosts={fetchPosts} postsPerPage={postsPerPage}></PaginationComponent>
+      <PaginationComponent listLength={postsQtd} fetchList={fetchPosts} itemsPerPage={postsPerPage}></PaginationComponent>
     </>
   );
 };

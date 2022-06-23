@@ -60,6 +60,10 @@ export const apiCreateComment = async (text: string, postId: number, userId: num
   return api.post("/newcomment", { text, postId, userId });
 };
 
-export const apiListComments = async (id: number) => {
-  return api.post("/listComments", { id });
+export const apiListComments = async (id: number, offset: number, limit: number) => {
+  return api.post("/listComments", { id, offset, limit });
+};
+
+export const apiQtdComments = async (id: number) => {
+  return api.post("/qtdComments", { id });
 };

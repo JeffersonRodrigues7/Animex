@@ -25,5 +25,6 @@ routes.post("/qtdPosts", authMiddleware, PostController.findQtdPosts);
 //CommentController
 routes.post("/newcomment", authMiddleware, CommentController.create);
 routes.post("/listComments", authMiddleware, CommentController.findComments);
+routes.post("/qtdComments", authMiddleware, CommentController.findQtdComments);
 
 export { routes };

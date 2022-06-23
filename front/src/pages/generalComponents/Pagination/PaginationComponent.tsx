@@ -3,19 +3,19 @@ import { Pagination } from "react-bootstrap";
 import "./paginationComponentStyles.css";
 
 interface Props {
-  postsLength: number;
-  fetchPosts: Function;
-  postsPerPage: number;
+  listLength: number;
+  fetchList: Function;
+  itemsPerPage: number;
 }
 
-export const PaginationComponent = ({ postsLength, fetchPosts, postsPerPage }: Props) => {
+export const PaginationComponent = ({ listLength, fetchList, itemsPerPage }: Props) => {
   const [activePage, setActivePage] = useState(1);
-  const totalPages = Math.ceil(postsLength / postsPerPage);
+  const totalPages = Math.ceil(listLength / itemsPerPage);
   const pages = 3;
 
   const paginate = (pageNumber: number) => {
     setActivePage(pageNumber);
-    fetchPosts(pageNumber);
+    fetchList(pageNumber);
   };
 
   let subtractPages = activePage > 3 ? 3 : activePage - 1; //gambiarra para fazer com que na paginação mostremos a página ativa mais as 3 páginas anteriores

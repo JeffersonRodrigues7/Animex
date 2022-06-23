@@ -42,7 +42,6 @@ class PostController {
   }
 
   async findQtdPosts(req: Request, res: Response) {
-    const postslength = await PostModel.count();
     try {
       const postslength = await PostModel.count();
 

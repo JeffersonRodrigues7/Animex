@@ -3,15 +3,12 @@ import { useParams } from "react-router-dom";
 import { Figure, ListGroup } from "react-bootstrap";
 import { Buffer } from "buffer";
 import NewComment from "./NewComment";
-import { EditorState, ContentState, convertToRaw } from "draft-js";
-import { Editor } from "react-draft-wysiwyg";
-import htmlToDraft from "html-to-draftjs";
-import draftToHtml from "draftjs-to-html";
 import { AuthContext } from "../../../contexts/contextAuth";
-import { apiListComments } from "../../../services/api";
+import { apiListComments, apiQtdComments } from "../../../services/api";
 import { formatedData } from "../../../services/usefulFunctions";
 
 import "./commentStyles.css";
+import { PaginationComponent } from "../../generalComponents/Pagination/PaginationComponent";
 
 interface commentsModel {
   id: number;
@@ -35,6 +32,32 @@ const Comment = () => {
   const { id } = useContext(AuthContext);
   const [comments, setComments] = useState<commentsModel[]>([]);
 
+  const [commentsQtd, setCommentsQtd] = useState(0);
+  const [commentsPerPage] = useState(5);
+
+  const fetchComments = async (pageNumber: number) => {
+    var offset = pageNumber * commentsPerPage - commentsPerPage;
+
+    try {
+      const qtdComments = await apiQtdComments(Number(topicId));
+      setCommentsQtd(qtdComments.data);
+
+      const commentList = await apiListComments(Number(topicId), offset, commentsPerPage);
+      const commentListData = commentList.data;
+
+      commentListData.map((comment: any) => {
+        if (comment.user.profileImage) {
+          comment.user.profileImage = handleUserImage(comment.user.profileImage);
+        }
+        comment.createdAt = formatedData(comment.createdAt);
+      });
+
+      setComments(commentListData);
+    } catch (e: any) {
+      console.log("Erro ao listar comentários", e);
+    }
+  };
+
   const handleUserImage = (image: Buffer) => {
     const base64Flag = "data:image/jpg;base64,";
     const b64Image = Buffer.from(image).toString();
@@ -42,30 +65,7 @@ const Comment = () => {
   };
 
   useEffect(() => {
-    async function fetchComments() {
-      try {
-        const commentList = await apiListComments(Number(topicId));
-        const commentListData = commentList.data;
-
-        //const contentBlock = htmlToDraft(commentListData.content)
-        //const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks)
-        //const _editorState = EditorState.createWithContent(contentState);
-        //setEditorState(_editorState);
-
-        commentListData.map((comment: any) => {
-          if (comment.user.profileImage) {
-            comment.user.profileImage = handleUserImage(comment.user.profileImage);
-          }
-          comment.createdAt = formatedData(comment.createdAt);
-        });
-
-        setComments(commentListData);
-      } catch (e: any) {
-        console.log("Erro ao listar comentários", e);
-      }
-    }
-
-    fetchComments();
+    fetchComments(1);
   }, []);
 
   return (
@@ -82,6 +82,8 @@ const Comment = () => {
           </ListGroup.Item>
         ))}
       </ListGroup>
+      <hr></hr>
+      <PaginationComponent listLength={commentsQtd} fetchList={fetchComments} itemsPerPage={commentsPerPage}></PaginationComponent>
       <hr></hr>
       <NewComment postId={Number(topicId)} userId={id!}></NewComment>
     </div>
