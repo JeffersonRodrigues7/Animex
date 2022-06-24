@@ -23,6 +23,7 @@ class PostController {
       return res.send(error.message);
     }
   }
+
   async findAll(req: Request, res: Response) {
     const { offset, limit } = req.body;
 
@@ -48,6 +49,29 @@ class PostController {
       return postslength ? res.status(200).json(postslength) : res.status(204).send("Nenhum post para contar");
     } catch (error: any) {
       console.error("Erro ao contar qtd de tópicos: ", error);
+      return res.send(error.message);
+    }
+  }
+
+  async update(req: Request, res: Response) {
+    const { id, lastUserPostName } = req.body;
+
+    try {
+      const post = await PostModel.update(
+        {
+          lastUserPostName: lastUserPostName,
+        },
+        {
+          where: {
+            id: id,
+          },
+        }
+      );
+      await PostModel.increment({ replies: 1 }, { where: { id: id } });
+
+      return post ? res.status(204).send() : res.status(200).json(post);
+    } catch (error: any) {
+      console.error("Erro ao fazer update de foto de perfil: ", error);
       return res.send(error.message);
     }
   }

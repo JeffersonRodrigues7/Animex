@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Button, Form, Alert } from "react-bootstrap";
+import { AuthContext } from "../../../contexts/contextAuth";
 import { Formik } from "formik";
 import EditorComponent from "../../generalComponents/Editor/EditorComponent";
-import { apiCreateComment } from "../../../services/api";
+import { apiCreateComment, apiUpdatedPost } from "../../../services/api";
 import "./newCommentStyles.css";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
@@ -12,8 +13,9 @@ interface Props {
 }
 
 const NewComment = ({ postId, userId }: Props) => {
-  const [content, setContent] = useState<string>("");
+  const { user } = useContext(AuthContext);
 
+  const [content, setContent] = useState<string>("");
   const [newComment, setNewComment] = useState(false);
   const [newCommentText, setNewCommentText] = useState("");
   const [variant, setVariant] = useState("success");
@@ -42,8 +44,9 @@ const NewComment = ({ postId, userId }: Props) => {
 
     try {
       const commentResult = await apiCreateComment(content, postId, userId);
+      console.log(commentResult);
       if (commentResult.status === 201) {
-        resetForm();
+        await apiUpdatedPost(postId, user!);
       } else {
         result = 1;
       }

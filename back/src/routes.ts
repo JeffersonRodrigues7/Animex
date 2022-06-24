@@ -15,12 +15,13 @@ routes.get("/users/userName/:userName", UserController.findByUserName);
 routes.get("/users/email/:email", UserController.findByEmail);
 routes.post("/login", UserController.login);
 routes.post("/users/id", authMiddleware, UserController.findById);
-routes.post("/update", authMiddleware, upload.single("profileImage"), UserController.update);
+routes.patch("/update", authMiddleware, upload.single("profileImage"), UserController.update);
 
 //PostController
 routes.post("/newpost", authMiddleware, PostController.create);
 routes.post("/listPosts", authMiddleware, PostController.findAll);
 routes.post("/qtdPosts", authMiddleware, PostController.findQtdPosts);
+routes.patch("/updatePost", authMiddleware, PostController.update);
 
 //CommentController
 routes.post("/newcomment", authMiddleware, CommentController.create);

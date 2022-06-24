@@ -134,7 +134,6 @@ class UserController {
     const file = (req as MulterRequest).file;
     const userId = Number(req.body.userId);
 
-    console.log(file.buffer);
     const newProfileImage = Buffer.from(file.buffer).toString("base64");
 
     try {

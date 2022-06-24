@@ -35,7 +35,7 @@ export const apiFindUserById = async (id: number) => {
 };
 
 export const apiUpdatedProfile = async (profileImage: FormData) => {
-  return api.post("/update", profileImage, {
+  return api.patch("/update", profileImage, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
@@ -53,6 +53,10 @@ export const apiListPosts = async (offset: number, limit: number) => {
 
 export const apiQtdPosts = async () => {
   return api.post("/qtdPosts");
+};
+
+export const apiUpdatedPost = async (id: number, lastUserPostName: string) => {
+  return api.patch("/updatePost", { id, lastUserPostName });
 };
 
 //CommentController
