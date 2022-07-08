@@ -12,7 +12,7 @@ const NavbarComponent = ({ links }: Props) => {
   return (
     <Navbar collapseOnSelect expand="xs" bg="dark" variant="dark">
       <Container id="navbar_container">
-        <Navbar.Brand href="/">Animex</Navbar.Brand>
+        <Navbar.Brand href="/1">Animex</Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav>

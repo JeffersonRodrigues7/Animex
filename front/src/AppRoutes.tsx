@@ -30,7 +30,7 @@ const AppRoutes = () => {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/logout" element={<Logout />}></Route>
           <Route
-            path="/"
+            path="/:page"
             element={
               <Private>
                 <HomePage />
@@ -38,7 +38,7 @@ const AppRoutes = () => {
             }
           />
           <Route
-            path="/topic/:topicTitle/:topicId"
+            path="/topic/:topicTitle/:topicId/:page"
             element={
               <Private>
                 <TopicPage />

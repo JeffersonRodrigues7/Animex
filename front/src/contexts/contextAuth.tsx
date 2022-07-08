@@ -58,7 +58,7 @@ export const AuthProvider = ({ children }: any) => {
         setId(Number(userId));
         setUser(userName);
         setAuthenticated(true);
-        navigate("/");
+        navigate("/1");
 
         return 0;
       } else if (res.status === 204) return 1;

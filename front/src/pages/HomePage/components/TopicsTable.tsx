@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { Table, Image, Nav } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
 import { Buffer } from "buffer";
 import { formatedData } from "../../../services/usefulFunctions";
 import { apiListPosts, apiQtdPosts } from "../../../services/api";
@@ -22,12 +22,13 @@ export interface postsModel {
 const TopicsTable = () => {
   const navigate = useNavigate();
 
+  const { page } = useParams();
   const [posts, setPosts] = useState<postsModel[]>([]);
   const [postsQtd, setPostsQtd] = useState(0);
   const [postsPerPage] = useState(5);
 
-  const fetchPosts = async (pageNumber: number) => {
-    var offset = pageNumber * postsPerPage - postsPerPage;
+  const fetchPosts = async () => {
+    var offset = Number(page) * postsPerPage - postsPerPage;
 
     try {
       const qtdPosts = await apiQtdPosts();
@@ -35,7 +36,6 @@ const TopicsTable = () => {
 
       const postList = await apiListPosts(offset, postsPerPage);
       const postListData = postList.data;
-      console.log(postListData);
 
       postListData.map((post: any) => {
         post.user.profileImage = handleUserImage(post.user.profileImage);
@@ -49,9 +49,17 @@ const TopicsTable = () => {
   };
 
   const handleTopicClicked = (e: any) => {
+    console.log(e.target);
     const postClickedTitle: string = e.target.text;
     const postClickedId: string = e.target.id;
-    navigate(`/topic/${postClickedTitle}/${postClickedId}`);
+    navigate(`/topic/${postClickedTitle}/${postClickedId}/${1}`);
+  };
+
+  const handleTopicAuxClicked = (e: any) => {
+    console.log(e.target);
+    const postClickedTitle: string = e.target.text;
+    const postClickedId: string = e.target.id;
+    window.open(`/topic/${postClickedTitle}/${postClickedId}/${1}`, "_blank");
   };
 
   const handleUserImage = (image: Buffer) => {
@@ -61,8 +69,8 @@ const TopicsTable = () => {
   };
 
   useEffect(() => {
-    fetchPosts(1);
-  }, []);
+    fetchPosts();
+  }, [page]);
 
   return (
     <>
@@ -90,7 +98,7 @@ const TopicsTable = () => {
                 <Image className="table_image" src={post.user.profileImage} alt={post.user.userName} />
               </td>
               <td className="table_text_body_title" style={{ width: "70.00%" }}>
-                <Nav.Link id={post.id} className="table_text_body_title_link" onClick={(e) => handleTopicClicked(e)}>
+                <Nav.Link id={post.id} className="table_text_body_title_link" onClick={(e) => handleTopicClicked(e)} onAuxClick={(e) => handleTopicAuxClicked(e)}>
                   {post.title}
                 </Nav.Link>
                 <div className="post_mobile_extra_information d-block d-sm-none">
@@ -108,8 +116,7 @@ const TopicsTable = () => {
           ))}
         </tbody>
       </Table>
-
-      <PaginationComponent listLength={postsQtd} fetchList={fetchPosts} itemsPerPage={postsPerPage}></PaginationComponent>
+      <PaginationComponent listLength={postsQtd} itemsPerPage={postsPerPage} url={""} activePage={Number(page)}></PaginationComponent>
     </>
   );
 };

@@ -33,7 +33,7 @@ const NewTopic = () => {
       if (resPost.status === 201) {
         const resComment = await apiCreateComment(content, resPost.data.id, userId);
         if (resComment.status === 201) {
-          navigate(`/topic/${resPost.data.title}/${resPost.data.id}`);
+          navigate(`/topic/${resPost.data.title}/${resPost.data.id}/1`);
           return 0;
         } else {
           return 1;

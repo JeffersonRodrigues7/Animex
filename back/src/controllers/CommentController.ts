@@ -3,6 +3,16 @@ import { CommentModel } from "../models/CommentModel";
 import { PostModel } from "../models/PostModel";
 import { UserModel } from "../models/UserModel";
 
+interface commentInterface {
+  id: number;
+  text: string;
+  createdAt: string;
+  updatedAt: string;
+  postId: number;
+  userId: number;
+  user: object;
+}
+
 class CommentController {
   async create(req: Request, res: Response) {
     try {
@@ -14,7 +24,16 @@ class CommentController {
         userId,
       });
 
-      return res.status(201).json(comment);
+      const { id } = comment as unknown as commentInterface;
+
+      const completeComment = await CommentModel.findOne({
+        where: {
+          id: id,
+        },
+        include: [{ model: UserModel, attributes: ["userName", "profileImage"] }],
+      });
+
+      return res.status(201).json(completeComment);
     } catch (error: any) {
       console.error(error);
       return res.send(error.message);

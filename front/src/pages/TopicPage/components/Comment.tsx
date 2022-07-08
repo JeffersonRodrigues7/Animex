@@ -3,12 +3,12 @@ import { useParams } from "react-router-dom";
 import { Figure, ListGroup } from "react-bootstrap";
 import { Buffer } from "buffer";
 import NewComment from "./NewComment";
+import { socket } from "../../../services/apiSocket";
 import { AuthContext } from "../../../contexts/contextAuth";
 import { apiListComments, apiQtdComments } from "../../../services/api";
 import { formatedData } from "../../../services/usefulFunctions";
-
-import "./commentStyles.css";
 import { PaginationComponent } from "../../generalComponents/Pagination/PaginationComponent";
+import "./commentStyles.css";
 
 interface commentsModel {
   id: number;
@@ -28,15 +28,15 @@ interface commentsModel {
 }
 
 const Comment = () => {
-  const { topicTitle, topicId } = useParams();
+  const { topicTitle, topicId, page } = useParams();
   const { id } = useContext(AuthContext);
   const [comments, setComments] = useState<commentsModel[]>([]);
 
   const [commentsQtd, setCommentsQtd] = useState(0);
-  const [commentsPerPage] = useState(5);
+  const [commentsPerPage, setCommentsPerPage] = useState(7);
 
-  const fetchComments = async (pageNumber: number) => {
-    var offset = pageNumber * commentsPerPage - commentsPerPage;
+  const fetchComments = async () => {
+    var offset = Number(page) * commentsPerPage - commentsPerPage;
 
     try {
       const qtdComments = await apiQtdComments(Number(topicId));
@@ -58,6 +58,14 @@ const Comment = () => {
     }
   };
 
+  const fetchNewComment = async (Newcomment: any) => {
+    if (Newcomment.user.profileImage) {
+      Newcomment.user.profileImage = handleUserImage(Newcomment.user.profileImage);
+    }
+    Newcomment.createdAt = formatedData(Newcomment.createdAt);
+    setComments((prevtState) => [...prevtState, Newcomment]);
+  };
+
   const handleUserImage = (image: Buffer) => {
     const base64Flag = "data:image/jpg;base64,";
     const b64Image = Buffer.from(image).toString();
@@ -65,8 +73,18 @@ const Comment = () => {
   };
 
   useEffect(() => {
-    fetchComments(1);
-  }, []);
+    socket.on("update_topic", (data: commentsModel) => {
+      let paginationUL: HTMLElement = document.getElementById("pagination_ul")!;
+      let paginationLastLI = paginationUL.children[paginationUL?.children.length - 1];
+      if (data.postId === Number(topicId) && paginationLastLI.classList.contains("active")) {
+        fetchNewComment(data);
+      }
+    });
+  }, [socket]);
+
+  useEffect(() => {
+    fetchComments();
+  }, [page]);
 
   return (
     <div id="comment_body">
@@ -83,9 +101,9 @@ const Comment = () => {
         ))}
       </ListGroup>
       <hr></hr>
-      <PaginationComponent listLength={commentsQtd} fetchList={fetchComments} itemsPerPage={commentsPerPage}></PaginationComponent>
+      <PaginationComponent listLength={commentsQtd} itemsPerPage={commentsPerPage} url={`/topic/${topicTitle}/${topicId}`} activePage={Number(page)}></PaginationComponent>
       <hr></hr>
-      <NewComment postId={Number(topicId)} userId={id!}></NewComment>
+      <NewComment postId={Number(topicId)} userId={id!} fetchList={fetchComments}></NewComment>
     </div>
   );
 };

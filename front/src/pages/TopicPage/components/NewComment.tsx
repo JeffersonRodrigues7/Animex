@@ -2,6 +2,7 @@ import { useState, useContext } from "react";
 import { Button, Form, Alert } from "react-bootstrap";
 import { AuthContext } from "../../../contexts/contextAuth";
 import { Formik } from "formik";
+import { socket } from "../../../services/apiSocket";
 import EditorComponent from "../../generalComponents/Editor/EditorComponent";
 import { apiCreateComment, apiUpdatedPost } from "../../../services/api";
 import "./newCommentStyles.css";
@@ -10,9 +11,10 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 interface Props {
   postId: number;
   userId: number;
+  fetchList: Function;
 }
 
-const NewComment = ({ postId, userId }: Props) => {
+const NewComment = ({ postId, userId, fetchList }: Props) => {
   const { user } = useContext(AuthContext);
 
   const [content, setContent] = useState<string>("");
@@ -44,8 +46,9 @@ const NewComment = ({ postId, userId }: Props) => {
 
     try {
       const commentResult = await apiCreateComment(content, postId, userId);
-      console.log(commentResult);
       if (commentResult.status === 201) {
+        socket.emit("new_message", commentResult.data);
+        //console.log("Mensagem criada: ", commentResult.data);
         await apiUpdatedPost(postId, user!);
       } else {
         result = 1;
