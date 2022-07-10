@@ -101,8 +101,11 @@ const Comment = () => {
         ))}
       </ListGroup>
       <hr></hr>
+
       <PaginationComponent listLength={commentsQtd} itemsPerPage={commentsPerPage} url={`/topic/${topicTitle}/${topicId}`} activePage={Number(page)}></PaginationComponent>
+
       <hr></hr>
+
       <NewComment postId={Number(topicId)} userId={id!} fetchList={fetchComments}></NewComment>
     </div>
   );

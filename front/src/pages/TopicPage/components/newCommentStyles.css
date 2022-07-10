@@ -6,3 +6,98 @@
   height: fit-content;
   padding: 5px;
 }
+
+#new_comment_button {
+  float: right;
+  margin-bottom: 10px;
+  margin-right: 10px;
+}
+
+#new_comment_close {
+  margin-left: 10px;
+}
+
+#new_comment_div {
+  background-color: white;
+  bottom: 0;
+}
+
+.aux_div_new_comment_input_style {
+  margin-bottom: 40px;
+}
+
+@media screen and (max-width: 370px) {
+  .aux_div_new_comment_style {
+    margin-bottom: 320px;
+  }
+
+  #new_comment_div {
+    width: 100%;
+  }
+
+  #new_comment_input {
+    width: 100%;
+  }
+}
+
+@media screen and (min-width: 370px) {
+  .aux_div_new_comment_style {
+    margin-bottom: 280px;
+  }
+
+  #new_comment_div {
+    width: 100%;
+  }
+
+  #new_comment_input {
+    width: 100%;
+  }
+}
+
+@media screen and (min-width: 576px) {
+  #new_comment_div {
+    left: 10%;
+    width: 80%;
+  }
+
+  #new_comment_input {
+    left: 9.5%;
+    max-width: 90%;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  #new_comment_div {
+    left: 10%;
+    max-width: 80%;
+  }
+
+  #new_comment_input {
+    left: 9%;
+    max-width: 90.5%;
+  }
+}
+
+@media screen and (min-width: 992px) {
+  #new_comment_div {
+    left: 17.5%;
+    max-width: 65%;
+  }
+
+  #new_comment_input {
+    left: 17.5%;
+    max-width: 80.5%;
+  }
+}
+
+@media screen and (min-width: 1400px) {
+  #new_comment_div {
+    left: 25%;
+    max-width: 50%;
+  }
+
+  #new_comment_input {
+    left: 25.5%;
+    max-width: 70%;
+  }
+}

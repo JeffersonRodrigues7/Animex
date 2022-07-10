@@ -22,6 +22,19 @@ const NewComment = ({ postId, userId, fetchList }: Props) => {
   const [newCommentText, setNewCommentText] = useState("");
   const [variant, setVariant] = useState("success");
 
+  const [hideInput, setHideInput] = useState(false);
+  const [hideTextArea, setHideTextArea] = useState(true);
+
+  const showText = () => {
+    setHideInput(true);
+    setHideTextArea(false);
+  };
+
+  const showInput = () => {
+    setHideTextArea(true);
+    setHideInput(false);
+  };
+
   const handleAlert = (result: number) => {
     setNewComment(true);
     if (result === 0) {
@@ -63,23 +76,35 @@ const NewComment = ({ postId, userId, fetchList }: Props) => {
 
   return (
     <>
-      <Formik id="formik" onSubmit={console.log} initialValues={{}}>
-        {({ resetForm }) => (
-          <Form onSubmit={(e) => handleSubmit(e, resetForm)}>
-            <Form.Group className="mb-3" controlId="new_comment_text">
-              <EditorComponent setContent={setContent} />
-            </Form.Group>
-            <Button variant="primary" type="submit">
-              Enviar
-            </Button>
-            <div id="alert_div">
-              <Alert show={newComment} variant={variant} id="comment_alert">
-                <p>{newCommentText}</p>
-              </Alert>
-            </div>
-          </Form>
-        )}
-      </Formik>
+      <div id="aux_div_new_comment" className={hideTextArea ? "aux_div_new_comment_input_style" : "aux_div_new_comment_style"}></div>
+      <div id="new_comment_input" hidden={hideInput} className="fixed-bottom" onClick={showText}>
+        <Form.Group controlId="new_comment_input">
+          <Form.Control placeholder="Clique aqui para responder" />
+        </Form.Group>
+      </div>
+      <div hidden={hideTextArea} id="new_comment_div" className="fixed-bottom">
+        <Formik id="formik" onSubmit={console.log} initialValues={{}}>
+          {({ resetForm }) => (
+            <Form id="new_comment_form" onSubmit={(e) => handleSubmit(e, resetForm)}>
+              <Form.Group className="mb-3" style={{ background: "white" }} controlId="new_comment_text">
+                <EditorComponent setContent={setContent} />
+              </Form.Group>
+              <hr></hr>
+              <Button id="new_comment_close" variant="dark" onClick={showInput}>
+                Fechar
+              </Button>
+              <Button id="new_comment_button" variant="primary" type="submit">
+                Enviar
+              </Button>
+              <div id="alert_div">
+                <Alert show={newComment} variant={variant} id="comment_alert">
+                  <p>{newCommentText}</p>
+                </Alert>
+              </div>
+            </Form>
+          )}
+        </Formik>
+      </div>
     </>
   );
 };

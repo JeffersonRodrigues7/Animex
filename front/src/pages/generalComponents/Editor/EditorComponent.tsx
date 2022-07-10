@@ -14,6 +14,7 @@ const EditorComponent = ({ setContent }: Props) => {
   return (
     <>
       <Editor
+        editorStyle={{ height: "150px" }}
         placeholder="Novo comentário"
         editorState={editorState}
         toolbarClassName="toolbarClassName"

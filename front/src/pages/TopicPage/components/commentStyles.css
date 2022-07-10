@@ -18,4 +18,5 @@
 
 .comment_text {
   margin-bottom: 20px;
+  word-wrap: break-word;
 }
