@@ -22,18 +22,7 @@ const NewComment = ({ postId, userId, fetchList }: Props) => {
   const [newCommentText, setNewCommentText] = useState("");
   const [variant, setVariant] = useState("success");
 
-  const [hideInput, setHideInput] = useState(false);
   const [hideTextArea, setHideTextArea] = useState(true);
-
-  const showText = () => {
-    setHideInput(true);
-    setHideTextArea(false);
-  };
-
-  const showInput = () => {
-    setHideTextArea(true);
-    setHideInput(false);
-  };
 
   const handleAlert = (result: number) => {
     setNewComment(true);
@@ -53,12 +42,49 @@ const NewComment = ({ postId, userId, fetchList }: Props) => {
     }, 3000);
   };
 
+  const YoutubeEmbed = (embedId: string) => {
+    const embedVideoDiv = `
+      <div className="video-responsive">
+        <iframe
+          width=100% 
+          height=100%  
+          src=https://www.youtube.com/embed/${embedId} 
+          frameBorder="0" 
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+          allowFullScreen 
+          title="Embedded youtube"> 
+        </iframe>
+      </div>`;
+
+    return embedVideoDiv;
+  };
+  const searchYoutubeVideo = () => {
+    const regex: RegExp = /\s*[a-zA-Z\/\/:\.]*youtu(be.com\/watch\?v=|.be\/)([a-zA-Z0-9\-_]+)([a-zA-Z0-9\/\*\-\_\?\&\;\%\=\.]*)/gi;
+    const regexVideoId: RegExp = /^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/|shorts\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]*).*/;
+    var text_content = content.replace(/(\r\n|\n|\r)/g, " ");
+
+    const urlMatches = text_content.match(regex);
+    if (urlMatches) {
+      urlMatches.forEach((url: string, index: number) => {
+        const videoId = regexVideoId.exec(url);
+        if (videoId) {
+          const embedVideoDiv = YoutubeEmbed(videoId[1]);
+          text_content = text_content.replace(url, embedVideoDiv);
+        }
+      });
+    }
+    return text_content;
+  };
   const handleSubmit = async (e: any, resetForm: any) => {
     e.preventDefault();
     var result: number = 0;
+    searchYoutubeVideo();
+
+    var finalContent = searchYoutubeVideo();
+    // console.log(finalContent);
 
     try {
-      const commentResult = await apiCreateComment(content, postId, userId);
+      const commentResult = await apiCreateComment(finalContent, postId, userId);
       if (commentResult.status === 201) {
         socket.emit("new_message", commentResult.data);
         //console.log("Mensagem criada: ", commentResult.data);
@@ -77,7 +103,7 @@ const NewComment = ({ postId, userId, fetchList }: Props) => {
   return (
     <>
       <div id="aux_div_new_comment" className={hideTextArea ? "aux_div_new_comment_input_style" : "aux_div_new_comment_style"}></div>
-      <div id="new_comment_input" hidden={hideInput} className="fixed-bottom" onClick={showText}>
+      <div id="new_comment_input" hidden={!hideTextArea} className="fixed-bottom" onClick={() => setHideTextArea(false)}>
         <Form.Group controlId="new_comment_input">
           <Form.Control placeholder="Clique aqui para responder" />
         </Form.Group>
@@ -90,7 +116,7 @@ const NewComment = ({ postId, userId, fetchList }: Props) => {
                 <EditorComponent setContent={setContent} />
               </Form.Group>
               <hr></hr>
-              <Button id="new_comment_close" variant="dark" onClick={showInput}>
+              <Button id="new_comment_close" variant="dark" onClick={() => setHideTextArea(true)}>
                 Fechar
               </Button>
               <Button id="new_comment_button" variant="primary" type="submit">

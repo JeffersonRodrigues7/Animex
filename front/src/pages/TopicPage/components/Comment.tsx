@@ -63,6 +63,7 @@ const Comment = () => {
       Newcomment.user.profileImage = handleUserImage(Newcomment.user.profileImage);
     }
     Newcomment.createdAt = formatedData(Newcomment.createdAt);
+    console.log(Newcomment.text);
     setComments((prevtState) => [...prevtState, Newcomment]);
   };
 
@@ -86,6 +87,12 @@ const Comment = () => {
     fetchComments();
   }, [page]);
 
+  useEffect(() => {
+    comments.forEach((value: commentsModel, index: number) => {
+      console.log(value.text);
+    });
+  }, [comments]);
+
   return (
     <div id="comment_body">
       <ListGroup id="comments_listGroup">
@@ -100,6 +107,7 @@ const Comment = () => {
           </ListGroup.Item>
         ))}
       </ListGroup>
+
       <hr></hr>
 
       <PaginationComponent listLength={commentsQtd} itemsPerPage={commentsPerPage} url={`/topic/${topicTitle}/${topicId}`} activePage={Number(page)}></PaginationComponent>

@@ -17,7 +17,8 @@
   font-size: medium;
 }
 
-.table_text_body_title_link:link {
+.table_text_body_title_link,
+.table_text_body_title_link:hover {
   display: inline;
   color: black;
   width: fit-content;
