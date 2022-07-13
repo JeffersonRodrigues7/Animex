@@ -5,6 +5,7 @@ import { Formik } from "formik";
 import { socket } from "../../../services/apiSocket";
 import EditorComponent from "../../generalComponents/Editor/EditorComponent";
 import { apiCreateComment, apiUpdatedPost } from "../../../services/api";
+import { handleContent } from "../../../services/usefulFunctions";
 import "./newCommentStyles.css";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
@@ -42,46 +43,11 @@ const NewComment = ({ postId, userId, fetchList }: Props) => {
     }, 3000);
   };
 
-  const YoutubeEmbed = (embedId: string) => {
-    const embedVideoDiv = `
-      <div className="video-responsive">
-        <iframe
-          width=100% 
-          height=100%  
-          src=https://www.youtube.com/embed/${embedId} 
-          frameBorder="0" 
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-          allowFullScreen 
-          title="Embedded youtube"> 
-        </iframe>
-      </div>`;
-
-    return embedVideoDiv;
-  };
-  const searchYoutubeVideo = () => {
-    const regex: RegExp = /\s*[a-zA-Z\/\/:\.]*youtu(be.com\/watch\?v=|.be\/)([a-zA-Z0-9\-_]+)([a-zA-Z0-9\/\*\-\_\?\&\;\%\=\.]*)/gi;
-    const regexVideoId: RegExp = /^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/|shorts\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]*).*/;
-    var text_content = content.replace(/(\r\n|\n|\r)/g, " ");
-
-    const urlMatches = text_content.match(regex);
-    if (urlMatches) {
-      urlMatches.forEach((url: string, index: number) => {
-        const videoId = regexVideoId.exec(url);
-        if (videoId) {
-          const embedVideoDiv = YoutubeEmbed(videoId[1]);
-          text_content = text_content.replace(url, embedVideoDiv);
-        }
-      });
-    }
-    return text_content;
-  };
   const handleSubmit = async (e: any, resetForm: any) => {
     e.preventDefault();
     var result: number = 0;
-    searchYoutubeVideo();
 
-    var finalContent = searchYoutubeVideo();
-    // console.log(finalContent);
+    var finalContent = handleContent(content);
 
     try {
       const commentResult = await apiCreateComment(finalContent, postId, userId);

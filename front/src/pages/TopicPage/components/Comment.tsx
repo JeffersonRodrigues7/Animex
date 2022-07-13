@@ -63,7 +63,6 @@ const Comment = () => {
       Newcomment.user.profileImage = handleUserImage(Newcomment.user.profileImage);
     }
     Newcomment.createdAt = formatedData(Newcomment.createdAt);
-    console.log(Newcomment.text);
     setComments((prevtState) => [...prevtState, Newcomment]);
   };
 
@@ -86,12 +85,6 @@ const Comment = () => {
   useEffect(() => {
     fetchComments();
   }, [page]);
-
-  useEffect(() => {
-    comments.forEach((value: commentsModel, index: number) => {
-      console.log(value.text);
-    });
-  }, [comments]);
 
   return (
     <div id="comment_body">

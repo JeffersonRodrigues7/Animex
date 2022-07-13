@@ -25,7 +25,7 @@ const EditorComponent = ({ setContent }: Props) => {
           setContent(draftToHtml(convertToRaw(newState.getCurrentContent())));
         }}
         toolbar={{
-          options: ["inline", "fontSize", "textAlign"],
+          options: ["inline", "fontSize", "textAlign", "image"],
           inline: {
             options: ["bold", "italic", "underline"],
             bold: { className: "bordered-option-classname" },
@@ -46,6 +46,7 @@ const EditorComponent = ({ setContent }: Props) => {
             right: { className: undefined },
             justify: { className: undefined },
           },
+          image: { className: "demo-option-custom", popupClassName: "demo-popup-custom" },
         }}
       />
     </>
