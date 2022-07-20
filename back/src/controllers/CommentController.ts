@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import axios from "axios";
 import { CommentModel } from "../models/CommentModel";
 import { PostModel } from "../models/PostModel";
 import { UserModel } from "../models/UserModel";
@@ -75,6 +76,19 @@ class CommentController {
       return commentslength ? res.status(200).json(commentslength) : res.status(204).send("Nenhum comentário para contar");
     } catch (error: any) {
       console.error("Erro ao contar qtd de comentários: ", error);
+      return res.send(error.message);
+    }
+  }
+
+  async getTweet(req: Request, res: Response) {
+    const { url } = req.body;
+
+    try {
+      const response = await axios.get(url);
+      const encodedHtmlResponse = encodeURIComponent(response.data.html);
+      return res.send(encodedHtmlResponse);
+    } catch (error: any) {
+      console.error("Erro ao buscar tweet", error);
       return res.send(error.message);
     }
   }

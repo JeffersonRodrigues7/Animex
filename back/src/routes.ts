@@ -27,5 +27,6 @@ routes.patch("/updatePost", authMiddleware, PostController.update);
 routes.post("/newcomment", authMiddleware, CommentController.create);
 routes.post("/listComments", authMiddleware, CommentController.findComments);
 routes.post("/qtdComments", authMiddleware, CommentController.findQtdComments);
+routes.post("/getTweet", authMiddleware, CommentController.getTweet);
 
 export { routes };

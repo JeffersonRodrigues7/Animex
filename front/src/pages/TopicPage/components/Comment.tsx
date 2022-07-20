@@ -6,7 +6,7 @@ import NewComment from "./NewComment";
 import { socket } from "../../../services/apiSocket";
 import { AuthContext } from "../../../contexts/contextAuth";
 import { apiListComments, apiQtdComments } from "../../../services/api";
-import { formatedData } from "../../../services/usefulFunctions";
+import { formatedData } from "../../../functions/usefulFunctions";
 import { PaginationComponent } from "../../generalComponents/Pagination/PaginationComponent";
 import "./commentStyles.css";
 
@@ -44,7 +44,6 @@ const Comment = () => {
 
       const commentList = await apiListComments(Number(topicId), offset, commentsPerPage);
       const commentListData = commentList.data;
-
       commentListData.map((comment: any) => {
         if (comment.user.profileImage) {
           comment.user.profileImage = handleUserImage(comment.user.profileImage);
@@ -78,6 +77,7 @@ const Comment = () => {
       let paginationLastLI = paginationUL.children[paginationUL?.children.length - 1];
       if (data.postId === Number(topicId) && paginationLastLI.classList.contains("active")) {
         fetchNewComment(data);
+        //console.log(data.text);
       }
     });
   }, [socket]);
@@ -100,13 +100,9 @@ const Comment = () => {
           </ListGroup.Item>
         ))}
       </ListGroup>
-
       <hr></hr>
-
       <PaginationComponent listLength={commentsQtd} itemsPerPage={commentsPerPage} url={`/topic/${topicTitle}/${topicId}`} activePage={Number(page)}></PaginationComponent>
-
       <hr></hr>
-
       <NewComment postId={Number(topicId)} userId={id!} fetchList={fetchComments}></NewComment>
     </div>
   );

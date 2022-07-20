@@ -71,3 +71,8 @@ export const apiListComments = async (id: number, offset: number, limit: number)
 export const apiQtdComments = async (id: number) => {
   return api.post("/qtdComments", { id });
 };
+
+//Outros
+export const apiGetTweet = async (url: string) => {
+  return api.post("/getTweet", { url });
+};

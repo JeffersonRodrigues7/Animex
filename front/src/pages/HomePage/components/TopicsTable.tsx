@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Table, Image, Nav } from "react-bootstrap";
 import { Buffer } from "buffer";
-import { formatedData } from "../../../services/usefulFunctions";
+import { formatedData } from "../../../functions/usefulFunctions";
 import { apiListPosts, apiQtdPosts } from "../../../services/api";
 import { PaginationComponent } from "../../generalComponents/Pagination/PaginationComponent";
 import "./topicsTableStyles.css";
@@ -49,14 +49,12 @@ const TopicsTable = () => {
   };
 
   const handleTopicClicked = (e: any) => {
-    console.log(e.target);
     const postClickedTitle: string = e.target.text;
     const postClickedId: string = e.target.id;
     navigate(`/topic/${postClickedTitle}/${postClickedId}/${1}`);
   };
 
   const handleTopicAuxClicked = (e: any) => {
-    console.log(e.target);
     const postClickedTitle: string = e.target.text;
     const postClickedId: string = e.target.id;
     window.open(`/topic/${postClickedTitle}/${postClickedId}/${1}`, "_blank");

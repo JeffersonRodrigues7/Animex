@@ -5,7 +5,7 @@ import { Formik } from "formik";
 import { socket } from "../../../services/apiSocket";
 import EditorComponent from "../../generalComponents/Editor/EditorComponent";
 import { apiCreateComment, apiUpdatedPost } from "../../../services/api";
-import { handleContent } from "../../../services/usefulFunctions";
+import { handleContent } from "../../../functions/handleLinks";
 import "./newCommentStyles.css";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
@@ -47,7 +47,7 @@ const NewComment = ({ postId, userId, fetchList }: Props) => {
     e.preventDefault();
     var result: number = 0;
 
-    var finalContent = handleContent(content);
+    var finalContent = await handleContent(content);
 
     try {
       const commentResult = await apiCreateComment(finalContent, postId, userId);
