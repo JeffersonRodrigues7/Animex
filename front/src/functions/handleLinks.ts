@@ -1,119 +1,82 @@
-import { InstagramPost, TwitterPost, YoutubeEmbed, link, Image } from "./embedLinksHTML";
-import { regexLinkHTTP, regexYoutube, regexImage, regexInstagram, regexTwitter, regexInstagramPostId, regexTwitterPost, regexTwitterProfile, regexYoutubeVideoId } from "./regexData";
+import { InstagramPostEmbed, TwitterPostEmbed, YoutubeVideoEmbed, LinkWithHTTPEmbed, LinkWithoutHTTPEmbed, ImageWithHTTPEmbed, ImageWithoutHTTPEmbed } from "./embedLinksHTML";
+import { regexLinkWithHTTP, regexLinkWithoutHTTP, regexImageWithHTTP, regexImageWithoutHTTP, regexInstagram, regexTwitter, regexInstagramPostId, regexTwitterPostStatus, regexTwitterPostUser, regexYoutubeVideoId } from "./regexData";
 
-var urlRegexLinkHTTPMatches: string[] | undefined = undefined;
-var urlRegexLinkMatches: string[] = [];
-var urlRegexYoutubeMatches: string[] | undefined = undefined;
-var urlRegexImageMatches: string[] | undefined = undefined;
-var urlRegexInstagramMatches: string[] | undefined = undefined;
-var urlRegexTwitterMatches: string[] | undefined = undefined;
+const urlMatches = async (content: string) => {
+  var contentArray: string[] = content.split(" ");
+  console.log(contentArray);
 
-const urlMatches = (content: string) => {
-  urlRegexLinkHTTPMatches = content.match(regexLinkHTTP)?.filter((item, index, self) => index === self.indexOf(item));
-  //urlRegexLinkMatches = content.match(regexLink)?.filter((item, index, self) => index === self.indexOf(item));
+  for (var i = 0; i < contentArray.length; i++) {
+    const youtubeVideoResult = contentArray[i].match(regexYoutubeVideoId);
+    if (youtubeVideoResult) {
+      contentArray[i] = YoutubeVideoEmbed(youtubeVideoResult[1]);
+      continue;
+    }
 
-  urlRegexYoutubeMatches = content.match(regexYoutube)?.filter((item, index, self) => index === self.indexOf(item));
-  urlRegexImageMatches = content.match(regexImage)?.filter((item, index, self) => index === self.indexOf(item));
-  urlRegexInstagramMatches = content.match(regexInstagram)?.filter((item, index, self) => index === self.indexOf(item));
-  urlRegexTwitterMatches = content.match(regexTwitter)?.filter((item, index, self) => index === self.indexOf(item));
-
-  const allRegexMatches: string[] | undefined = [...(urlRegexYoutubeMatches ?? []), ...(urlRegexImageMatches ?? []), ...(urlRegexTwitterMatches ?? []), ...(urlRegexInstagramMatches ?? [])];
-  console.log(urlRegexLinkHTTPMatches, urlRegexYoutubeMatches);
-  if (urlRegexLinkHTTPMatches) {
-    for (const url of urlRegexLinkHTTPMatches) {
-      var resultContainsLinks = allRegexMatches?.find((value) => value.includes(url));
-      var resultLinksContainsOtherUrls = allRegexMatches?.find((value) => url.includes(value));
-      if (!resultContainsLinks && !resultLinksContainsOtherUrls) {
-        urlRegexLinkMatches.push(url);
+    const twitterResult = contentArray[i].match(regexTwitter);
+    if (twitterResult) {
+      const TwitterPostStatus = contentArray[i].match(regexTwitterPostStatus);
+      const TwitterPostUser = contentArray[i].match(regexTwitterPostUser);
+      if (TwitterPostStatus && TwitterPostUser) {
+        contentArray[i] = await TwitterPostEmbed(TwitterPostUser[1], TwitterPostStatus[1]);
+        continue;
       }
     }
-  }
-};
 
-const searchLinks = (content: string) => {
-  var text_content = content;
+    const instagramResult = contentArray[i].match(regexInstagram);
+    if (instagramResult) {
+      const instagramPostResult = contentArray[i].match(regexInstagramPostId);
+      if (instagramPostResult) {
+        contentArray[i] = InstagramPostEmbed(instagramPostResult[1]);
+        continue;
+      }
+    }
 
-  if (urlRegexLinkMatches) {
-    for (const url of urlRegexLinkMatches) {
-      const linkDiv = link(url);
-      text_content = text_content.replaceAll(url, linkDiv);
+    const ImageWithHTTPResult = contentArray[i].match(regexImageWithHTTP);
+    console.log(contentArray[i], ImageWithHTTPResult);
+    if (ImageWithHTTPResult) {
+      contentArray[i] = ImageWithHTTPEmbed(ImageWithHTTPResult[0]);
+      continue;
+    }
+
+    const ImageWithoutHTTPResult = contentArray[i].match(regexImageWithoutHTTP);
+    console.log(contentArray[i], ImageWithoutHTTPResult);
+    if (ImageWithoutHTTPResult) {
+      contentArray[i] = ImageWithoutHTTPEmbed(ImageWithoutHTTPResult[0]);
+      continue;
+    }
+
+    const linkWithHTTPResult = contentArray[i].match(regexLinkWithHTTP);
+    if (linkWithHTTPResult) {
+      contentArray[i] = LinkWithHTTPEmbed(linkWithHTTPResult[0]);
+      continue;
+    }
+
+    const linkWithouthHTTPResult = contentArray[i].match(regexLinkWithoutHTTP);
+    if (linkWithouthHTTPResult) {
+      contentArray[i] = LinkWithoutHTTPEmbed(linkWithouthHTTPResult[0]);
+      continue;
     }
   }
 
-  return text_content;
+  const finalContent = contentArray.join(" ");
+
+  return finalContent;
 };
 
-const searchYoutubeVideo = (content: string) => {
-  var text_content = content.replace(/(\r\n|\n|\r)/g, " ");
-
-  if (urlRegexYoutubeMatches) {
-    urlRegexYoutubeMatches.forEach((url: string, index: number) => {
-      const videoId = regexYoutubeVideoId.exec(url);
-      if (videoId) {
-        const embedVideoDiv = YoutubeEmbed(videoId[1]);
-        text_content = text_content.replaceAll(url, embedVideoDiv);
-      }
-    });
-  }
-  return text_content;
-};
-
-const searchImages = (content: string) => {
+const initialChanges = (content: string) => {
   var text_content = content;
-
-  if (urlRegexImageMatches) {
-    urlRegexImageMatches.forEach((url: string, index: number) => {
-      const ImageDiv = Image(url);
-      text_content = text_content.replaceAll(url, ImageDiv);
-    });
-  }
-
-  return text_content;
-};
-
-const searchInstagramPost = (content: string) => {
-  var text_content = content;
-
-  if (urlRegexInstagramMatches) {
-    urlRegexInstagramMatches.forEach((url: string, index: number) => {
-      const postId = url.match(regexInstagramPostId);
-      if (postId) {
-        const instagramPostDiv = InstagramPost(postId[1]);
-        text_content = text_content.replaceAll(url, instagramPostDiv);
-      }
-    });
-  }
-
-  return text_content;
-};
-
-const searchTweets = async (content: string) => {
-  var text_content = content;
-
-  if (urlRegexTwitterMatches) {
-    for (const url of urlRegexTwitterMatches) {
-      const postTwitter = url.match(regexTwitterPost);
-      const profileNameTwitter = url.match(regexTwitterProfile);
-      if (postTwitter && profileNameTwitter) {
-        const PostTweetDiv = await TwitterPost(profileNameTwitter[1], postTwitter[1]);
-        text_content = text_content.replaceAll(url, PostTweetDiv);
-      } /*else if (profileNameTwitter) {
-        const ProfileTweetDiv = TwitterProfile(profileNameTwitter[1]);
-        text_content = text_content.replace(url, ProfileTweetDiv);
-      }*/
-    }
-  }
+  text_content = text_content
+    .replaceAll("<p>", "<p> ")
+    .replaceAll("</p>", " </p>")
+    .replaceAll("<p>  </p>", "")
+    .replace(/(\r\n|\n|\r)/g, " ");
 
   return text_content;
 };
 
 export const handleContent = async (content: string) => {
-  urlMatches(content);
   var finalContent: string = content;
-  finalContent = searchLinks(finalContent);
-  finalContent = searchYoutubeVideo(finalContent);
-  finalContent = searchImages(finalContent);
-  finalContent = searchInstagramPost(finalContent);
-  finalContent = await searchTweets(finalContent);
+  finalContent = initialChanges(finalContent);
+  finalContent = await urlMatches(finalContent);
   return finalContent;
 };

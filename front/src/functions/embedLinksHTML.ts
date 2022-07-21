@@ -1,13 +1,6 @@
 import { apiGetTweet } from "../services/api";
 
-export const link = (link: string) => {
-  const linkDiv = `
-    <a href="${link}">${link}</a>
-  `;
-  return linkDiv;
-};
-
-export const YoutubeEmbed = (embedId: string) => {
+export const YoutubeVideoEmbed = (embedId: string) => {
   const embedVideoDiv = `
     <div className="embed_video">
       <iframe
@@ -24,16 +17,26 @@ export const YoutubeEmbed = (embedId: string) => {
   return embedVideoDiv;
 };
 
-export const Image = (imageUrl: string) => {
-  const ImageDiv = `
-    <div className="image">
-      <img src=${imageUrl} width=75% height=75%>
-    </div>`;
+export const TwitterPostEmbed = async (tweetUsername: string, tweetId: string) => {
+  const tweetUrl = `https://twitter.com/${tweetUsername}/status/${tweetId}`;
+  const encodedtweetUrl = encodeURIComponent(tweetUrl);
+  const twitterPostRequest = `https://publish.twitter.com/oembed?url=${encodedtweetUrl}`;
+  const res = await apiGetTweet(twitterPostRequest);
+  const tweetPostsrc = res.data;
 
-  return ImageDiv;
+  const twitterPosteDiv = `
+    <iframe
+      title="tweet by ${tweetUsername}"
+      width="100%"
+      height="425px"
+      data-tweet-url="https://twitter.com/${tweetUsername}/status/${tweetId}"
+      src="data:text/html;charset=utf-8,${tweetPostsrc}">
+    </iframe>`;
+
+  return twitterPosteDiv;
 };
 
-export const InstagramPost = (postId: string) => {
+export const InstagramPostEmbed = (postId: string) => {
   const instagramPostDiv = `
     <iframe 
       width="300" 
@@ -47,30 +50,34 @@ export const InstagramPost = (postId: string) => {
   return instagramPostDiv;
 };
 
-export const TwitterPost = async (tweetUsername: string, tweetId: string) => {
-  const tweetUrl = `https://twitter.com/${tweetUsername}/status/${tweetId}`;
-  const encodedtweetUrl = encodeURIComponent(tweetUrl);
-  const twitterPostRequest = `https://publish.twitter.com/oembed?url=${encodedtweetUrl}`;
-  const res = await apiGetTweet(twitterPostRequest);
-  const tweetPostsrc = res.data;
+export const ImageWithHTTPEmbed = (imageUrl: string) => {
+  const ImageDiv = `
+    <div className="image">
+      <img src=${imageUrl} width=75% height=75%>
+    </div>`;
 
-  const twitterPosteDiv = `
-    <iframe
-      title="tweet by ${tweetUsername}"
-      width="100%"
-      height="500px"
-      data-tweet-url="https://twitter.com/${tweetUsername}/status/${tweetId}"
-      src="data:text/html;charset=utf-8,${tweetPostsrc}">
-    </iframe>`;
-
-  return twitterPosteDiv;
+  return ImageDiv;
 };
 
-export const TwitterProfile = (userName: string) => {
-  const twitterProfileDiv = `        
-  <a className="twitter-timeline" data-height="800" href="https://twitter.com/${userName}">
-      
-  </a> `;
+export const ImageWithoutHTTPEmbed = (imageUrl: string) => {
+  const ImageDiv = `
+    <div className="image">
+      <img src=https://${imageUrl} width=75% height=75%>
+    </div>`;
 
-  return twitterProfileDiv;
+  return ImageDiv;
+};
+
+export const LinkWithHTTPEmbed = (link: string) => {
+  const linkDiv = `
+    <a href="${link}">${link}</a>
+  `;
+  return linkDiv;
+};
+
+export const LinkWithoutHTTPEmbed = (link: string) => {
+  const linkDiv = `
+    <a href="https://${link}">${link}</a>
+  `;
+  return linkDiv;
 };

@@ -1,16 +1,14 @@
-const regexLinkHTTP: RegExp = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\/\/=]*)/gi;
-//const regexLink: RegExp = /(http|ftp|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:\/~+#-]*[\w@?^=%&\/~+#-])/gi;
+export const regexYoutubeVideoId: RegExp = /^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/|shorts\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]*).*/;
 
-const regexYoutube: RegExp = /\s*[a-zA-Z\/\/:\.]*youtu(be.com\/watch\?v=|.be\/)([a-zA-Z0-9\-_]+)([a-zA-Z0-9\/\*\-\_\?\&\;\%\=\.]*)/gi;
-const regexYoutubeVideoId: RegExp = /^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/|shorts\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]*).*/;
+export const regexTwitter: RegExp = /\s*[a-zA-Z\/\/:\.]*twitter\.com\/(?:(?:\w)*#!\/)?(?:pages\/)?(?:[\w\-]*\/)*([\w\-]*)/;
+export const regexTwitterPostStatus: RegExp = /status\/(\d+)/;
+export const regexTwitterPostUser: RegExp = /com\/(\w*)/;
 
-const regexImage: RegExp = /\b(https?:\/\/\S+(?:png|jpe?g|gif))\b/gi;
+export const regexInstagram: RegExp = /((?:https?:\/\/)?(?:www\.)?instagram\.com\/(?:p|reel)\/([^/?#&]+)).*/;
+export const regexInstagramPostId: RegExp = /\/(?:p|reel)\/(.*?)\//;
 
-const regexInstagram: RegExp = /((?:https?:\/\/)?(?:www\.)?instagram\.com\/(?:p|reel)\/([^/?#&]+)).*/gi;
-const regexInstagramPostId: RegExp = /\/(?:p|reel)\/(.*?)\//;
+export const regexImageWithHTTP: RegExp = /(https:)\/\/[^'"<>]+?\.(jpg|jpeg|gif|png)/;
+export const regexImageWithoutHTTP: RegExp = /.*\.(gif|jpe?g|bmp|png)$/;
 
-const regexTwitter: RegExp = /\s*[a-zA-Z\/\/:\.]*twitter\.com\/(?:(?:\w)*#!\/)?(?:pages\/)?(?:[\w\-]*\/)*([\w\-]*)/gi;
-const regexTwitterProfile: RegExp = /com\/(\w*)/;
-const regexTwitterPost: RegExp = /status\/(\d+)/;
-
-export { regexLinkHTTP, regexYoutube, regexImage, regexInstagram, regexTwitter, regexYoutubeVideoId, regexInstagramPostId, regexTwitterProfile, regexTwitterPost };
+export const regexLinkWithHTTP: RegExp = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\/\/=]*)/;
+export const regexLinkWithoutHTTP: RegExp = /(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\/\/=]*)/;
