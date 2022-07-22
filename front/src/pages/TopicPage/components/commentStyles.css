@@ -1,22 +1,99 @@
-.comment_profile_image {
-  width: 55px;
-  height: 55px;
+.list-group-item {
+  padding: 8px 0px 8px 0px;
 }
 
-.comment_profile_userName,
+.comment_profile_userName {
+  display: inline;
+  vertical-align: top;
+}
+
 .comment_time {
   display: inline;
-  margin-left: 10px;
   vertical-align: top;
 }
 
 .comment_quote {
   display: inline;
-  margin-right: 10px;
+  vertical-align: top;
   float: right;
 }
 
 .comment_text {
   margin-bottom: 20px;
   word-wrap: break-word;
+}
+
+img {
+  margin-bottom: 0px;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: 100%;
+}
+
+@media screen and (max-width: 400px) {
+  .comment_profile_image {
+    width: 35px;
+    height: 35px;
+  }
+
+  .comment_profile_userName {
+    margin-left: 5px;
+  }
+
+  .comment_profile_userName,
+  .comment_time,
+  .comment_quote {
+    font-size: x-small;
+  }
+
+  .comment_quote {
+    margin-right: 0px;
+  }
+
+  .comment_text {
+    font-size: small;
+  }
+}
+
+@media screen and (min-width: 400px) {
+  .comment_profile_image {
+    width: 45px;
+    height: 45px;
+  }
+
+  .comment_profile_userName {
+    margin-left: 5px;
+  }
+
+  .comment_profile_userName,
+  .comment_time,
+  .comment_quote {
+    font-size: small;
+  }
+
+  .comment_quote {
+    margin-right: 0px;
+  }
+}
+
+@media screen and (min-width: 650px) {
+  .comment_profile_image {
+    width: 55px;
+    height: 55px;
+  }
+
+  .comment_profile_userName {
+    margin-left: 10px;
+  }
+
+  .comment_profile_userName,
+  .comment_time,
+  .comment_quote {
+    font-size: medium;
+  }
+
+  .comment_quote {
+    margin-right: 10px;
+  }
 }

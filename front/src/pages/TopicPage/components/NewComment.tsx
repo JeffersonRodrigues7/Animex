@@ -5,7 +5,7 @@ import { Formik } from "formik";
 import { socket } from "../../../services/apiSocket";
 import EditorComponent from "../../generalComponents/Editor/EditorComponent";
 import { apiCreateComment, apiUpdatedPost } from "../../../services/api";
-import { handleContent } from "../../../functions/handleLinks";
+import { handleContent } from "../../../functions/handleNewContent";
 import "./newCommentStyles.css";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
@@ -13,17 +13,17 @@ interface Props {
   postId: number;
   userId: number;
   fetchList: Function;
+  hideTextArea: boolean;
+  setHideTextArea: Function;
 }
 
-const NewComment = ({ postId, userId, fetchList }: Props) => {
+const NewComment = ({ postId, userId, fetchList, hideTextArea, setHideTextArea }: Props) => {
   const { user } = useContext(AuthContext);
 
   const [content, setContent] = useState<string>("");
   const [newComment, setNewComment] = useState(false);
   const [newCommentText, setNewCommentText] = useState("");
   const [variant, setVariant] = useState("success");
-
-  const [hideTextArea, setHideTextArea] = useState(true);
 
   const handleAlert = (result: number) => {
     setNewComment(true);

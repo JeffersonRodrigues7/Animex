@@ -2,7 +2,6 @@ import { apiGetTweet } from "../services/api";
 
 export const YoutubeVideoEmbed = (embedId: string) => {
   const embedVideoDiv = `
-    <div className="embed_video">
       <iframe
         width=100% 
         height=100%  
@@ -12,7 +11,7 @@ export const YoutubeVideoEmbed = (embedId: string) => {
         allowFullScreen 
         title="Embedded youtube"> 
       </iframe>
-    </div>`;
+    `;
 
   return embedVideoDiv;
 };
@@ -52,18 +51,16 @@ export const InstagramPostEmbed = (postId: string) => {
 
 export const ImageWithHTTPEmbed = (imageUrl: string) => {
   const ImageDiv = `
-    <div className="image">
-      <img src=${imageUrl} width=75% height=75%>
-    </div>`;
+      <img src=${imageUrl} >
+    `;
 
   return ImageDiv;
 };
 
 export const ImageWithoutHTTPEmbed = (imageUrl: string) => {
   const ImageDiv = `
-    <div className="image">
-      <img src=https://${imageUrl} width=75% height=75%>
-    </div>`;
+      <img src=https://${imageUrl} ">
+  `;
 
   return ImageDiv;
 };

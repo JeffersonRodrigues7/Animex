@@ -29,7 +29,7 @@ const NewTopic = () => {
   async function createPost(title: string, text: string, userId: number, userName: string): Promise<Number> {
     try {
       const resPost = await apiCreatePost(title, text, userId, userName);
-      console.log(resPost.data);
+      //console.log(resPost.data);
       if (resPost.status === 201) {
         const resComment = await apiCreateComment(content, resPost.data.id, userId);
         if (resComment.status === 201) {

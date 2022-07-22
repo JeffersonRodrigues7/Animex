@@ -3,7 +3,6 @@ import { regexLinkWithHTTP, regexLinkWithoutHTTP, regexImageWithHTTP, regexImage
 
 const urlMatches = async (content: string) => {
   var contentArray: string[] = content.split(" ");
-  console.log(contentArray);
 
   for (var i = 0; i < contentArray.length; i++) {
     const youtubeVideoResult = contentArray[i].match(regexYoutubeVideoId);
@@ -32,14 +31,12 @@ const urlMatches = async (content: string) => {
     }
 
     const ImageWithHTTPResult = contentArray[i].match(regexImageWithHTTP);
-    console.log(contentArray[i], ImageWithHTTPResult);
     if (ImageWithHTTPResult) {
       contentArray[i] = ImageWithHTTPEmbed(ImageWithHTTPResult[0]);
       continue;
     }
 
     const ImageWithoutHTTPResult = contentArray[i].match(regexImageWithoutHTTP);
-    console.log(contentArray[i], ImageWithoutHTTPResult);
     if (ImageWithoutHTTPResult) {
       contentArray[i] = ImageWithoutHTTPEmbed(ImageWithoutHTTPResult[0]);
       continue;
@@ -66,17 +63,28 @@ const urlMatches = async (content: string) => {
 const initialChanges = (content: string) => {
   var text_content = content;
   text_content = text_content
+    .replaceAll('<p style="text-align:start;"></p>', "")
+    .replaceAll('<p style="text-align:left;"><br></p>', "")
+    .replaceAll('<p style="text-align:left;"></p>', "")
+    .replaceAll('<p style="text-align:left;">&nbsp;</p>', "")
+    .replaceAll("><br><", "> <")
+    .replaceAll('">', '"> ')
+    .replaceAll("</", " </")
     .replaceAll("<p>", "<p> ")
     .replaceAll("</p>", " </p>")
     .replaceAll("<p>  </p>", "")
+    .replaceAll("<p> </p>", "")
+    .replaceAll("<p></p>", "")
     .replace(/(\r\n|\n|\r)/g, " ");
 
   return text_content;
 };
 
 export const handleContent = async (content: string) => {
+  //console.log(content);
   var finalContent: string = content;
   finalContent = initialChanges(finalContent);
+  //console.log(finalContent);
   finalContent = await urlMatches(finalContent);
   return finalContent;
 };
