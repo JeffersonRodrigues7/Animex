@@ -1,21 +1,20 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { NavigateFunction, useNavigate } from "react-router-dom";
+import RegisterForm from "./components/RegisterForm";
 import NavbarComponent from "../generalComponents/Navbar/NavbarComponent";
-import { LoginForm } from "./components/LoginForm";
+import "./registerPageIndexStyle.css";
 
-import "./loginIndexStyles.css";
-
-const LoginPage = () => {
-  const navigate = useNavigate();
+const RegisterPage = () => {
+  const navigate: NavigateFunction = useNavigate();
   const links: { href: string; text: string }[] = [
     { href: "/login", text: "Entrar" },
     { href: "/register", text: "Cadastrar" },
   ];
 
   useEffect(() => {
-    const recoveredUser = localStorage.getItem("user");
-    if (recoveredUser) {
-      navigate("/");
+    const recovered_user = localStorage.getItem("user");
+    if (recovered_user) {
+      navigate("/1");
     }
   }, []);
 
@@ -24,11 +23,11 @@ const LoginPage = () => {
       <div id="navbar_component">
         <NavbarComponent links={links}></NavbarComponent>
       </div>
-      <div id="login_form">
-        <LoginForm></LoginForm>
+      <div id="register_form">
+        <RegisterForm></RegisterForm>
       </div>
     </>
   );
 };
 
-export default LoginPage;
+export default RegisterPage;

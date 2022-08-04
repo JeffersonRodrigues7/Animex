@@ -1,7 +1,7 @@
 import NavbarComponent from "../generalComponents/Navbar/NavbarComponent";
-import Topics from "./components/Topics";
+import Topics from "./components/Community";
 
-const HomePage = () => {
+const CommunityPage = () => {
   const links: { href: string; text: string }[] = [
     { href: "/profile", text: "Perfil" },
     { href: "/logout", text: "Sair" },
@@ -18,4 +18,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default CommunityPage;

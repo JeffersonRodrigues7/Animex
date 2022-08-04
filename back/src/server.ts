@@ -4,6 +4,9 @@ import { db } from "./database/db-connection";
 
 dotenv.config();
 
+/**
+ * Iniciando banco de dados
+ */
 app.listen(process.env.BACKEND_LISTEN_PORT!, async () => {
   try {
     await db.sync();

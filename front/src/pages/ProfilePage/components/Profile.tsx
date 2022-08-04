@@ -1,24 +1,25 @@
 import { useState, useContext, useEffect } from "react";
 import { Container, Row, Col, Figure, Form } from "react-bootstrap";
+import { Buffer } from "buffer";
+import { AxiosResponse } from "axios";
 import { apiFindUserById, apiUpdatedProfile } from "../../../services/api";
 import { AuthContext } from "../../../contexts/contextAuth";
-import { Buffer } from "buffer";
-import "./profileStyles.css";
+import "./profileStyle.css";
 
-export const Profile = () => {
+const Profile = () => {
   const [profileImage, setProfileImage] = useState("");
-  const { id } = useContext(AuthContext);
+  const { id, user } = useContext(AuthContext);
 
   useEffect(() => {
-    async function getUser() {
+    async function getUser(): Promise<void> {
       if (id) {
         try {
-          const res = await apiFindUserById(id);
-          const base64Flag = "data:image/jpg;base64,";
-          const b64Image = Buffer.from(res.data.user.profileImage.data).toString();
+          const res_user: AxiosResponse = await apiFindUserById(id);
+          const base64Flag: string = "data:image/jpg;base64,";
+          const b64Image: string = Buffer.from(res_user.data.user.profile_image.data).toString();
           setProfileImage(base64Flag + b64Image);
-        } catch (error) {
-          console.log("Dados de usuário não encontrado", error);
+        } catch (error: any) {
+          console.error(`Error returning data from user ${user}: `, error);
         }
       }
     }
@@ -26,13 +27,19 @@ export const Profile = () => {
     getUser();
   }, []);
 
-  const handlePicture = async (e: any) => {
-    const formData = new FormData();
-    console.log(e.target.files[0]);
-    formData.append("profileImage", e.target.files[0], e.target.files[0].name);
-    formData.append("userId", id!.toString());
+  const handlePicture = async (e: React.ChangeEvent<HTMLElement>): Promise<void> => {
+    const new_image_input: HTMLInputElement = e.target as HTMLInputElement;
+    const form_data: FormData = new FormData();
+    if (new_image_input.files) {
+      form_data.append("profileImage", new_image_input.files[0], new_image_input.files[0].name);
+      form_data.append("id", id!.toString());
+    }
 
-    apiUpdatedProfile(formData);
+    try {
+      const res_form_data: AxiosResponse = await apiUpdatedProfile(form_data);
+    } catch (error: any) {
+      console.error(`Error updating profile image from user ${user}: `, error);
+    }
   };
 
   return (
@@ -57,3 +64,5 @@ export const Profile = () => {
     </Container>
   );
 };
+
+export default Profile;

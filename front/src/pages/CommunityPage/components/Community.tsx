@@ -1,7 +1,7 @@
 import { Container, Row, Col } from "react-bootstrap";
 import TopicsTable from "./TopicsTable";
 import NewTopic from "./NewTopic";
-import "./topicsStyles.css";
+import "./communityStyle.css";
 
 const Topics = () => {
   return (

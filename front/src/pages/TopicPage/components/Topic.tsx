@@ -1,7 +1,6 @@
-import { useState } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import Comment from "./Comment";
-import "./topicPageStyles.css";
+import "./topicStyle.css";
 
 const TopicPageComponent = () => {
   return (

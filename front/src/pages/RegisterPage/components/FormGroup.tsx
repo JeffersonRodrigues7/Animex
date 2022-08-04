@@ -15,7 +15,7 @@ interface Props {
   isInvalid: boolean | undefined;
 }
 
-function FormGroup({ control_id, label, type, name, placeholder, form_text, handleChange, value, error, isInvalid }: Props) {
+const FormGroup = ({ control_id, label, type, name, placeholder, form_text, handleChange, value, error, isInvalid }: Props) => {
   return (
     <Form.Group className="mb-3 field" controlId={control_id}>
       <Form.Label>{label}</Form.Label>
@@ -24,6 +24,6 @@ function FormGroup({ control_id, label, type, name, placeholder, form_text, hand
       <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>
     </Form.Group>
   );
-}
+};
 
-export { FormGroup };
+export default FormGroup;

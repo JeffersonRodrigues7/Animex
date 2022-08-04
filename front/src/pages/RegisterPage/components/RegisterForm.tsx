@@ -1,18 +1,25 @@
-import { useState, useContext } from "react";
+import { useState, useContext, FormEvent } from "react";
 import { Form, Button, Alert } from "react-bootstrap";
 import { Formik } from "formik";
 import * as yup from "yup";
 import bcrypt from "bcryptjs";
-import { FormGroup } from "./FormGroup";
+import FormGroup from "./FormGroup";
 import { AuthContext } from "../../../contexts/contextAuth";
-import { apiFindUserByUserName, apiFindUserByEmail } from "../../../services/api";
-import profile_default_image from "../../../other/imgs/profile_default_image.png";
-import "./registerFormStyles.css";
+import { apiFindUserByUsername, apiFindUserByEmail } from "../../../services/api";
+import "./registerFormStyle.css";
 
-const saltRounds = 10;
+interface FormValues {
+  username: string;
+  email: string;
+  password: string;
+  password_repeat: string;
+  accept_terms: boolean;
+}
+
+const saltRounds: number = 10;
 
 const scheme = yup.object().shape({
-  user_name: yup
+  username: yup
     .string()
     .matches(/^[a-zA-Z]./, "Nome de usuário deve começar com uma letra")
     .min(4, "Nome de usuário deve ter entre 4 a 15 caracteres")
@@ -39,69 +46,66 @@ const scheme = yup.object().shape({
             }
         ) */
     .required("Campo obrigatório"),
-  user_email: yup.string().email("Email inválido").required("Campo obrigatório"),
-  user_password: yup
+  email: yup.string().email("Email inválido").required("Campo obrigatório"),
+  password: yup
     .string()
     .required("Campo obrigatório")
     .matches(/^(?=.*[0-9]+.*)(?=.*[a-zA-Z]+.*)[0-9a-zA-Z]{8,15}$/, "Senha deve conter entre 8 a 15 caracteres, com pelo menos 1 letra e 1 número"),
-  user_password_repeat: yup
+  password_repeat: yup
     .string()
     .required("Campo obrigatório")
-    .oneOf([yup.ref("user_password"), null], "As senhas devem coincidir"),
-  user_accept_terms: yup.bool().oneOf([true], "É necessário aceitar os termos").required("Campo obrigatório"),
+    .oneOf([yup.ref("password"), null], "As senhas devem coincidir"),
+  accept_terms: yup.bool().oneOf([true], "É necessário aceitar os termos").required("Campo obrigatório"),
 });
 
-function RegisterForm() {
-  //Os três estados abaixo são para o Alerta do formulário
+const RegisterForm = () => {
   const { register, login } = useContext(AuthContext);
+
+  //Os três estados abaixo são para o Alerta do formulário
   const [show, setShow] = useState(false);
   const [text, setText] = useState("");
   const [variant, setVariant] = useState("success");
 
-  async function verifyUserUsed(user_name: string): Promise<Boolean> {
+  async function verifyUserUsed(username: string): Promise<boolean> {
     try {
-      const res = await apiFindUserByUserName(user_name);
-      return res.status === 204 ? true : false;
-    } catch (error) {
-      console.log(error);
+      const res_username = await apiFindUserByUsername(username);
+      return res_username.status === 204 ? true : false;
+    } catch (error: any) {
+      console.error(`Error checking if a user with username ${username} exists: `, error);
       return false;
     }
   }
 
-  async function verifyEmailUsed(user_email: string): Promise<Boolean> {
+  async function verifyEmailUsed(email: string): Promise<boolean> {
     try {
-      const res = await apiFindUserByEmail(user_email);
-      return res.status === 204 ? true : false;
-    } catch (error) {
-      console.log(error);
+      const res_email = await apiFindUserByEmail(email);
+      return res_email.status === 204 ? true : false;
+    } catch (error: any) {
+      console.error(`Error checking if a user with email ${email} exists: `, error);
       return false;
     }
   }
 
-  const handleSubmit = async (e: any, values: any, resetForm: any) => {
+  const handleSubmit = async (e: FormEvent, values: FormValues): Promise<void> => {
     e.preventDefault();
-    const user_name = values.user_name;
-    const user_email = values.user_email;
-    const user_password = bcrypt.hashSync(values.user_password, saltRounds);
+    const username: string = values.username;
+    const email: string = values.email;
+    const password: string = bcrypt.hashSync(values.password, saltRounds);
 
-    const userUsed = await verifyUserUsed(user_name);
-    const emailUsed = await verifyEmailUsed(user_email);
+    const user_used: boolean = await verifyUserUsed(username);
+    const email_used: boolean = await verifyEmailUsed(email);
 
+    setShow(true);
     setVariant("danger");
-    if (!userUsed && !emailUsed) {
-      const userLevel = 0;
+    if (!user_used && !email_used) {
+      const access_level = 0;
       const biography = "";
-      const profileImage = profile_default_image;
 
-      //console.log(profile_default_image_buffer);
-
-      const resRegister = await register!(user_name, user_email, user_password, userLevel, biography, profileImage);
-      setShow(true);
-      if (resRegister) {
+      const res_register: boolean = await register!(username, email, password, access_level, biography);
+      if (res_register) {
         //Se o registro foi feito com sucesso, então vamos fazer o login
-        const resLogin = await login!(user_email, values.user_password);
-        console.log(resLogin);
-        if (resLogin === 0) {
+        const res_login: number = await login!(email, values.password);
+        if (res_login === 0) {
           setVariant("success");
           setText("Usuário cadastrado com sucesso, você será redirecionado para a tela principal");
         } else {
@@ -115,8 +119,8 @@ function RegisterForm() {
     }
 
     //E-mail ou nome de usuário já está em uso
-    else if (!userUsed && emailUsed) setText("Email já em uso");
-    else if (userUsed && !emailUsed) setText("Nome de usuário já em uso");
+    else if (!user_used && email_used) setText("Email já em uso");
+    else if (user_used && !email_used) setText("Nome de usuário já em uso");
     else setText("Email e nome de usuário já em uso");
   };
 
@@ -127,82 +131,72 @@ function RegisterForm() {
         validationSchema={scheme}
         onSubmit={console.log}
         initialValues={{
-          user_name: "",
-          user_email: "",
-          user_password: "",
-          user_password_repeat: "",
-          user_accept_terms: false,
+          username: "",
+          email: "",
+          password: "",
+          password_repeat: "",
+          accept_terms: false,
         }}
       >
-        {({ handleChange, values, errors, isValid, dirty, resetForm }) => (
-          <Form id="form" className="px-3 py-2 border border-dark rounded" noValidate onSubmit={(e) => handleSubmit(e, values, resetForm)}>
+        {({ handleChange, values, errors, isValid, dirty }) => (
+          <Form id="form" className="px-3 py-2 border border-dark rounded" noValidate onSubmit={(e) => handleSubmit(e, values)}>
             <Alert show={show} variant={variant}>
               <p>{text}</p>
             </Alert>
             <FormGroup
-              control_id="user_name"
+              control_id="username"
               label="Usuário"
               type="user"
-              name="user_name"
+              name="username"
               placeholder="Nome de usuário"
               form_text="Seu nick deve conter entre 4 a 15 caracteres, começando com uma letra do alfabeto"
               handleChange={handleChange}
-              value={values.user_name}
-              error={errors.user_name}
-              isInvalid={!!errors.user_name}
+              value={values.username}
+              error={errors.username}
+              isInvalid={!!errors.username}
             />
 
             <FormGroup
               control_id="email"
               label="E-mail"
               type="email"
-              name="user_email"
+              name="email"
               placeholder="E-mail"
               form_text="Digite um e-mail válido, vamos enviar uma mensagem de confirmação"
               handleChange={handleChange}
-              value={values.user_email}
-              error={errors.user_email}
-              isInvalid={!!errors.user_email}
+              value={values.email}
+              error={errors.email}
+              isInvalid={!!errors.email}
             />
 
             <FormGroup
               control_id="password"
               label="Senha"
               type="password"
-              name="user_password"
+              name="password"
               placeholder="Senha"
               form_text="Senha deve conter entre 8 a 15 caracteres, com pelo menos 1 letra e 1 número"
               handleChange={handleChange}
-              value={values.user_password}
-              error={errors.user_password}
-              isInvalid={!!errors.user_password}
+              value={values.password}
+              error={errors.password}
+              isInvalid={!!errors.password}
             />
 
             <FormGroup
               control_id="password_repeat"
               label="Confirmação de Senha"
               type="password"
-              name="user_password_repeat"
+              name="password_repeat"
               placeholder="Senha"
               form_text="Digite sua senha novamente"
               handleChange={handleChange}
-              value={values.user_password_repeat}
-              error={errors.user_password_repeat}
-              isInvalid={!!errors.user_password_repeat}
+              value={values.password_repeat}
+              error={errors.password_repeat}
+              isInvalid={!!errors.password_repeat}
             />
 
             <Form.Group className="mb-3" id="grid_checkbox_accept_rules">
-              <Form.Check
-                required
-                id="checkbox_terms"
-                type="checkbox"
-                name="user_accept_terms"
-                label="Aceito os Termos"
-                onChange={handleChange}
-                isInvalid={!!errors.user_accept_terms}
-                feedback={errors.user_accept_terms}
-                feedbackType="invalid"
-              />
+              <Form.Check required id="checkbox_terms" type="checkbox" name="accept_terms" label="Aceito os Termos" onChange={handleChange} isInvalid={!!errors.accept_terms} feedback={errors.accept_terms} feedbackType="invalid" />
             </Form.Group>
 
             <Button variant="primary" type="submit" disabled={!(isValid && dirty)}>
@@ -216,6 +210,6 @@ function RegisterForm() {
       </div>
     </>
   );
-}
+};
 
-export { RegisterForm };
+export default RegisterForm;

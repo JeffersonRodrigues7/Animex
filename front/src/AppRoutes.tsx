@@ -1,12 +1,12 @@
 import { useContext } from "react";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
-import HomePage from "./pages/HomePage/homeIndex";
-import LoginPage from "./pages/LoginPage/loginIndex";
-import RegisterPage from "./pages/RegisterPage/registerIndex";
-import ProfilePage from "./pages/ProfilePage/profileIndex";
-import TopicPage from "./pages/TopicPage/topicIndex";
+import CommunityPage from "./pages/CommunityPage/CommunityPageIndex";
+import LoginPage from "./pages/LoginPage/LoginPageIndex";
+import RegisterPage from "./pages/RegisterPage/RegisterPageIndex";
+import ProfilePage from "./pages/ProfilePage/ProfilePageIndex";
+import TopicPage from "./pages/TopicPage/TopicPageIndex";
+import Logout from "./pages/generalComponents/Logout/Logout";
 import { AuthProvider, AuthContext } from "./contexts/contextAuth";
-import { Logout } from "./pages/generalComponents/Logout/Logout";
 
 const AppRoutes = () => {
   const Private = ({ children }: any) => {
@@ -16,7 +16,7 @@ const AppRoutes = () => {
     }
 
     if (!authenticated) {
-      return <Navigate to="/login"></Navigate>;
+      return <Navigate to="/"></Navigate>;
     }
 
     return children;
@@ -27,13 +27,13 @@ const AppRoutes = () => {
       <AuthProvider>
         <Routes>
           <Route path="/register" element={<RegisterPage />}></Route>
-          <Route path="/login" element={<LoginPage />} />
+          <Route path="/" element={<LoginPage />} />
           <Route path="/logout" element={<Logout />}></Route>
           <Route
             path="/:page"
             element={
               <Private>
-                <HomePage />
+                <CommunityPage />
               </Private>
             }
           />

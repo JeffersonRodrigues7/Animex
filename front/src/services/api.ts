@@ -1,11 +1,11 @@
-import axios from "axios";
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 
-export const api = axios.create({
+export const api: AxiosInstance = axios.create({
   baseURL: "http://localhost:3001",
 });
 
-api.interceptors.request.use(function (config) {
-  const token = localStorage.getItem("token");
+api.interceptors.request.use(function (config: AxiosRequestConfig<any>): AxiosRequestConfig<any> {
+  const token: string | null = localStorage.getItem("token");
   if (token) {
     config.headers!.Authorization = token;
   }
@@ -14,65 +14,64 @@ api.interceptors.request.use(function (config) {
 });
 
 //UserController
-export const apiLogin = async (email: string, password: string) => {
+export const apiRegister = async (username: string, email: string, password: string, access_level: number, biography: string): Promise<AxiosResponse<any, any>> => {
+  return api.post("/register", { username, email, password, access_level, biography });
+};
+
+export const apiFindUserByUsername = async (username: string): Promise<AxiosResponse<any, any>> => {
+  return api.get("/users/username/:username", { params: { username } });
+};
+
+export const apiFindUserByEmail = async (email: string): Promise<AxiosResponse<any, any>> => {
+  return api.get("/users/email/:email", { params: { email } });
+};
+
+export const apiLogin = async (email: string, password: string): Promise<AxiosResponse<any, any>> => {
   return api.post("/login", { email, password });
 };
 
-export const apiRegister = async (userName: string, email: string, password: string, userLevel: number, biography: string, profileImage: string) => {
-  return api.post("/register", { userName, email, password, userLevel, biography, profileImage });
-};
-
-export const apiFindUserByUserName = async (userName: string) => {
-  return api.get("/users/userName/:userName", { params: { userName: userName } });
-};
-
-export const apiFindUserByEmail = async (email: string) => {
-  return api.get("/users/email/:email", { params: { email: email } });
-};
-
-export const apiFindUserById = async (id: number) => {
+export const apiFindUserById = async (id: number): Promise<AxiosResponse<any, any>> => {
   return api.post("/users/id", { id });
 };
 
-export const apiUpdatedProfile = async (profileImage: FormData) => {
-  return api.patch("/update", profileImage, {
+export const apiUpdatedProfile = async (profile_image: FormData): Promise<AxiosResponse<any, any>> => {
+  return api.patch("/update", profile_image, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
   });
 };
 
-//PostController
-export const apiCreatePost = async (title: string, text: string, creatorId: number, creatorName: string) => {
-  return api.post("/newpost", { title, text, creatorId, creatorName });
+//TopicController
+export const apiCreateTopic = async (title: string, user_id: number, username: string): Promise<AxiosResponse<any, any>> => {
+  return api.post("/new-topic", { title, user_id, username });
 };
 
-export const apiListPosts = async (offset: number, limit: number) => {
-  return api.post("/listPosts", { offset, limit });
+export const apiListTopics = async (offset: number, limit: number): Promise<AxiosResponse<any, any>> => {
+  return api.post("/list-topics", { offset, limit });
 };
 
-export const apiQtdPosts = async () => {
-  return api.post("/qtdPosts");
+export const apiQtdTopics = async () => {
+  return api.post("/qtd-topics");
 };
 
-export const apiUpdatedPost = async (id: number, lastUserPostName: string) => {
-  return api.patch("/updatePost", { id, lastUserPostName });
+export const apiUpdatedTopic = async (id: number, last_user_comment_name: string): Promise<AxiosResponse<any, any>> => {
+  return api.patch("/update-topic", { id, last_user_comment_name });
 };
 
 //CommentController
-export const apiCreateComment = async (text: string, postId: number, userId: number) => {
-  return api.post("/newcomment", { text, postId, userId });
+export const apiCreateComment = async (text: string, user_id: number, topic_id: number): Promise<AxiosResponse<any, any>> => {
+  return api.post("/new-comment", { text, user_id, topic_id });
 };
 
-export const apiListComments = async (id: number, offset: number, limit: number) => {
-  return api.post("/listComments", { id, offset, limit });
+export const apiListComments = async (id: number, offset: number, limit: number): Promise<AxiosResponse<any, any>> => {
+  return api.post("/list-comments", { id, offset, limit });
 };
 
-export const apiQtdComments = async (id: number) => {
-  return api.post("/qtdComments", { id });
+export const apiQtdComments = async (id: number): Promise<AxiosResponse<any, any>> => {
+  return api.post("/qtd-comments", { id });
 };
 
-//Outros
-export const apiGetTweet = async (url: string) => {
-  return api.post("/getTweet", { url });
+export const apiGetTweet = async (url: string): Promise<AxiosResponse<any, any>> => {
+  return api.post("/get-tweet", { url });
 };

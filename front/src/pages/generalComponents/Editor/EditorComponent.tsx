@@ -8,14 +8,14 @@ interface Props {
   setContent: Function;
 }
 
-const EditorComponent = ({ setContent }: Props) => {
+const EditorComponent = ({ setContent }: Props): JSX.Element => {
   const [editorState, setEditorState] = useState<EditorState>(EditorState.createEmpty());
 
   return (
     <>
       <Editor
         editorStyle={{ height: "150px" }}
-        placeholder="Novo comentário"
+        placeholder="New Comment"
         editorState={editorState}
         toolbarClassName="toolbarClassName"
         wrapperClassName="wrapperClassName"

@@ -1,9 +1,9 @@
-import { useState, useContext } from "react";
+import { useState, useContext, FormEvent } from "react";
 import { Alert, Button, Form } from "react-bootstrap";
 import { AuthContext } from "../../../contexts/contextAuth";
-import "./loginFormStyles.css";
+import "./loginFormStyle.css";
 
-function LoginForm() {
+const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -12,22 +12,22 @@ function LoginForm() {
   const [text, setText] = useState("");
   const [variant, setVariant] = useState("success");
 
-  const { authenticated, login } = useContext(AuthContext);
+  const { login } = useContext(AuthContext);
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: FormEvent): Promise<void> => {
     e.preventDefault();
-    const user_email = email;
-    const user_password = password;
+    const user_email: string = email;
+    const user_password: string = password;
 
-    const resLogin = await login!(user_email, user_password);
+    const res_login: number = await login!(user_email, user_password);
 
     setVariant("danger");
     setShow(true);
-    if (resLogin === 0) {
+    if (res_login === 0) {
       setText("Login com sucesso");
       setVariant("success");
-    } else if (resLogin === 1) setText("Usuário não encontrado");
-    else if (resLogin === 2) setText("Senha incorreta");
+    } else if (res_login === 1) setText("Usuário não encontrado");
+    else if (res_login === 2) setText("Senha incorreta");
     else setText("Erro ao tentar fazer login");
   };
 
@@ -73,6 +73,6 @@ function LoginForm() {
       </div>
     </>
   );
-}
+};
 
-export { LoginForm };
+export default LoginForm;

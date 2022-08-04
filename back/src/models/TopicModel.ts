@@ -1,18 +1,18 @@
 import { CreationOptional, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model } from "sequelize";
 import { db } from "../database/db-connection";
 import { UserModel } from "./UserModel";
-import { TopicModel } from "./TopicModel";
 
-class CommentModel extends Model<InferAttributes<CommentModel>, InferCreationAttributes<CommentModel>> {
+class TopicModel extends Model<InferAttributes<TopicModel>, InferCreationAttributes<TopicModel>> {
   declare id: CreationOptional<number>;
-  declare text: string;
-  declare topic_id: ForeignKey<TopicModel["id"]>;
+  declare title: string;
+  declare last_user_comment_name: string;
+  declare replies: number;
   declare user_id: ForeignKey<UserModel["id"]>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
 
-CommentModel.init(
+TopicModel.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -20,8 +20,16 @@ CommentModel.init(
       allowNull: false,
       primaryKey: true,
     },
-    text: {
-      type: DataTypes.TEXT("long"),
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    last_user_comment_name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    replies: {
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     createdAt: DataTypes.DATE,
@@ -29,28 +37,18 @@ CommentModel.init(
   },
   {
     sequelize: db,
-    tableName: "comments",
+    tableName: "topics",
   }
 );
 
-CommentModel.belongsTo(UserModel, {
+TopicModel.belongsTo(UserModel, {
   constraints: true,
   foreignKey: "user_id",
   as: "user",
 });
 
-CommentModel.belongsTo(TopicModel, {
-  constraints: true,
-  foreignKey: "topic_id",
-  as: "topic",
-});
-
-UserModel.hasMany(CommentModel, {
+UserModel.hasMany(TopicModel, {
   foreignKey: "user_id",
 });
 
-TopicModel.hasMany(CommentModel, {
-  foreignKey: "topic_id",
-});
-
-export { CommentModel };
+export { TopicModel };

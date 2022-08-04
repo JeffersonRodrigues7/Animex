@@ -1,67 +1,78 @@
-import { InstagramPostEmbed, TwitterPostEmbed, YoutubeVideoEmbed, LinkWithHTTPEmbed, LinkWithoutHTTPEmbed, ImageWithHTTPEmbed, ImageWithoutHTTPEmbed } from "./embedLinksHTML";
-import { regexLinkWithHTTP, regexLinkWithoutHTTP, regexImageWithHTTP, regexImageWithoutHTTP, regexInstagram, regexTwitter, regexInstagramPostId, regexTwitterPostStatus, regexTwitterPostUser, regexYoutubeVideoId } from "./regexData";
+import { embedInstagramPost, embedTwitterPost, embedYoutubeVideo, embedLinkWithHTTP, embedLinkWithoutHTTP, embedImageWithHTTP, embedImageWithoutHTTP } from "./embedLinksHTML";
+import {
+  regex_link_with_HTTP,
+  regex_link_without_HTTP,
+  regex_image_with_HTTP,
+  regex_image_without_HTTP,
+  regex_instagram,
+  regex_twitter,
+  regex_instagram_post_id,
+  regex_twitter_post_status,
+  regex_twitter_post_user,
+  regex_youtube_video_id,
+} from "./regexData";
 
-const urlMatches = async (content: string) => {
-  var contentArray: string[] = content.split(" ");
+const urlMatches = async (content: string): Promise<string> => {
+  var content_array: string[] = content.split(" ");
 
-  for (var i = 0; i < contentArray.length; i++) {
-    const youtubeVideoResult = contentArray[i].match(regexYoutubeVideoId);
-    if (youtubeVideoResult) {
-      contentArray[i] = YoutubeVideoEmbed(youtubeVideoResult[1]);
+  for (var i = 0; i < content_array.length; i++) {
+    const youtube_video_result: RegExpMatchArray | null = content_array[i].match(regex_youtube_video_id);
+    if (youtube_video_result) {
+      content_array[i] = embedYoutubeVideo(youtube_video_result[1]);
       continue;
     }
 
-    const twitterResult = contentArray[i].match(regexTwitter);
-    if (twitterResult) {
-      const TwitterPostStatus = contentArray[i].match(regexTwitterPostStatus);
-      const TwitterPostUser = contentArray[i].match(regexTwitterPostUser);
-      if (TwitterPostStatus && TwitterPostUser) {
-        contentArray[i] = await TwitterPostEmbed(TwitterPostUser[1], TwitterPostStatus[1]);
+    const twitter_result = content_array[i].match(regex_twitter);
+    if (twitter_result) {
+      const twitter_post_status: RegExpMatchArray | null = content_array[i].match(regex_twitter_post_status);
+      const twitter_post_user: RegExpMatchArray | null = content_array[i].match(regex_twitter_post_user);
+      if (twitter_post_status && twitter_post_user) {
+        content_array[i] = await embedTwitterPost(twitter_post_user[1], twitter_post_status[1]);
         continue;
       }
     }
 
-    const instagramResult = contentArray[i].match(regexInstagram);
-    if (instagramResult) {
-      const instagramPostResult = contentArray[i].match(regexInstagramPostId);
-      if (instagramPostResult) {
-        contentArray[i] = InstagramPostEmbed(instagramPostResult[1]);
+    const instagram_result: RegExpMatchArray | null = content_array[i].match(regex_instagram);
+    if (instagram_result) {
+      const instagram_post_result: RegExpMatchArray | null = content_array[i].match(regex_instagram_post_id);
+      if (instagram_post_result) {
+        content_array[i] = embedInstagramPost(instagram_post_result[1]);
         continue;
       }
     }
 
-    const ImageWithHTTPResult = contentArray[i].match(regexImageWithHTTP);
-    if (ImageWithHTTPResult) {
-      contentArray[i] = ImageWithHTTPEmbed(ImageWithHTTPResult[0]);
+    const Image_with_HTTP_result: RegExpMatchArray | null = content_array[i].match(regex_image_with_HTTP);
+    if (Image_with_HTTP_result) {
+      content_array[i] = embedImageWithHTTP(Image_with_HTTP_result[0]);
       continue;
     }
 
-    const ImageWithoutHTTPResult = contentArray[i].match(regexImageWithoutHTTP);
-    if (ImageWithoutHTTPResult) {
-      contentArray[i] = ImageWithoutHTTPEmbed(ImageWithoutHTTPResult[0]);
+    const Image_withouth_HTTP_result: RegExpMatchArray | null = content_array[i].match(regex_image_without_HTTP);
+    if (Image_withouth_HTTP_result) {
+      content_array[i] = embedImageWithoutHTTP(Image_withouth_HTTP_result[0]);
       continue;
     }
 
-    const linkWithHTTPResult = contentArray[i].match(regexLinkWithHTTP);
-    if (linkWithHTTPResult) {
-      contentArray[i] = LinkWithHTTPEmbed(linkWithHTTPResult[0]);
+    const link_with_HTTP_result: RegExpMatchArray | null = content_array[i].match(regex_link_with_HTTP);
+    if (link_with_HTTP_result) {
+      content_array[i] = embedLinkWithHTTP(link_with_HTTP_result[0]);
       continue;
     }
 
-    const linkWithouthHTTPResult = contentArray[i].match(regexLinkWithoutHTTP);
-    if (linkWithouthHTTPResult) {
-      contentArray[i] = LinkWithoutHTTPEmbed(linkWithouthHTTPResult[0]);
+    const link_withouth_HTTP_result: RegExpMatchArray | null = content_array[i].match(regex_link_without_HTTP);
+    if (link_withouth_HTTP_result) {
+      content_array[i] = embedLinkWithoutHTTP(link_withouth_HTTP_result[0]);
       continue;
     }
   }
 
-  const finalContent = contentArray.join(" ");
+  const final_content: string = content_array.join(" ");
 
-  return finalContent;
+  return final_content;
 };
 
-const initialChanges = (content: string) => {
-  var text_content = content;
+const initialChanges = (content: string): string => {
+  var text_content: string = content;
   text_content = text_content
     .replaceAll('<p style="text-align:start;"></p>', "")
     .replaceAll('<p style="text-align:left;"><br></p>', "")
@@ -80,11 +91,9 @@ const initialChanges = (content: string) => {
   return text_content;
 };
 
-export const handleContent = async (content: string) => {
-  //console.log(content);
-  var finalContent: string = content;
-  finalContent = initialChanges(finalContent);
-  //console.log(finalContent);
-  finalContent = await urlMatches(finalContent);
-  return finalContent;
+export const handleContent = async (content: string): Promise<string> => {
+  var final_content: string = content;
+  final_content = initialChanges(final_content);
+  final_content = await urlMatches(final_content);
+  return final_content;
 };

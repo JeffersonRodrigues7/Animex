@@ -5,11 +5,11 @@
   border: 0px;
 }
 
-#post_alert,
-#post_alert p {
+#topic_alert,
+#topic_alert p {
   display: inline;
 }
 
-#post_alert {
+#topic_alert {
   padding: 5px;
 }

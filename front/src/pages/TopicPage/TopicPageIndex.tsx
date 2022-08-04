@@ -1,6 +1,6 @@
 import NavbarComponent from "../generalComponents/Navbar/NavbarComponent";
-import TopicPageComponent from "./components/TopicPageComponent";
-import "./topicIndexStyles.css";
+import TopicPageComponent from "./components/Topic";
+import "./topicPageIndexStyle.css";
 
 export const TopicPage = () => {
   const links: { href: string; text: string }[] = [

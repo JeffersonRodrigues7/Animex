@@ -2,7 +2,7 @@
   padding: 8px 0px 8px 0px;
 }
 
-.comment_profile_userName {
+.comment_profile_username {
   display: inline;
   vertical-align: top;
 }
@@ -37,11 +37,11 @@ img {
     height: 35px;
   }
 
-  .comment_profile_userName {
+  .comment_profile_username {
     margin-left: 5px;
   }
 
-  .comment_profile_userName,
+  .comment_profile_username,
   .comment_time,
   .comment_quote {
     font-size: x-small;
@@ -62,11 +62,11 @@ img {
     height: 45px;
   }
 
-  .comment_profile_userName {
+  .comment_profile_username {
     margin-left: 5px;
   }
 
-  .comment_profile_userName,
+  .comment_profile_username,
   .comment_time,
   .comment_quote {
     font-size: small;
@@ -83,11 +83,11 @@ img {
     height: 55px;
   }
 
-  .comment_profile_userName {
+  .comment_profile_username {
     margin-left: 10px;
   }
 
-  .comment_profile_userName,
+  .comment_profile_username,
   .comment_time,
   .comment_quote {
     font-size: medium;

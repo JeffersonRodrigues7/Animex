@@ -1,94 +1,111 @@
 import { Request, Response } from "express";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { CommentModel } from "../models/CommentModel";
-import { PostModel } from "../models/PostModel";
+import { TopicModel } from "../models/TopicModel";
 import { UserModel } from "../models/UserModel";
 
-interface commentInterface {
-  id: number;
+interface CommentCreateInterface {
   text: string;
-  createdAt: string;
-  updatedAt: string;
-  postId: number;
-  userId: number;
-  user: object;
+  user_id: number;
+  topic_id: number;
+}
+
+interface FindCommentsInterface {
+  id: number;
+  offset: number;
+  limit: number;
+}
+
+interface FindQtdCommentsInterface {
+  id: number;
+}
+
+interface GetTweetInterface {
+  url: string;
 }
 
 class CommentController {
-  async create(req: Request, res: Response) {
+  /**
+   * Cria novo comentário
+   */
+  async create(req: Request, res: Response): Promise<Response<any, Record<string, any>>> {
+    const { text, user_id, topic_id } = req.body as CommentCreateInterface;
     try {
-      const { text, postId, userId } = req.body;
-
-      const comment = await CommentModel.create({
+      const comment: CommentModel | null = await CommentModel.create({
         text,
-        postId,
-        userId,
+        user_id,
+        topic_id,
       });
 
-      const { id } = comment as unknown as commentInterface;
+      const { id } = comment;
 
-      const completeComment = await CommentModel.findOne({
+      const complete_comment: CommentModel | null = await CommentModel.findOne({
         where: {
           id: id,
         },
-        include: [{ model: UserModel, attributes: ["userName", "profileImage"] }],
+        include: [{ model: UserModel, as: "user", attributes: ["username", "profile_image"] }],
       });
 
-      return res.status(201).json(completeComment);
+      return res.status(201).json(complete_comment);
     } catch (error: any) {
-      console.error(error);
+      console.error(`Error creating new comment from user ${user_id} and topic ${topic_id}: `, error);
       return res.send(error.message);
     }
   }
-
-  async findComments(req: Request, res: Response) {
-    const { id, offset, limit } = req.body;
+  /**
+   * Retorna comentários de um tópico a partir de um id e um range
+   */
+  async findComments(req: Request, res: Response): Promise<Response<any, Record<string, any>>> {
+    const { id, offset, limit } = req.body as FindCommentsInterface;
 
     try {
-      const comments = await CommentModel.findAll({
+      const comments: CommentModel[] | null = await CommentModel.findAll({
         where: {
-          postId: id,
+          topic_id: id,
         },
         offset: offset,
         limit: limit,
         order: [["createdAt", "ASC"]],
-        include: [
-          { model: PostModel, attributes: ["text", "createdAt"] },
-          { model: UserModel, attributes: ["userName", "profileImage"] },
-        ],
+        include: [{ model: UserModel, as: "user", attributes: ["username", "profile_image"] }],
       });
 
       return comments ? res.status(200).json(comments) : res.status(204).send("Nenhum comentário para listar");
     } catch (error: any) {
-      console.error("Erro ao listar comentários: ", error);
+      console.error(`Error listing topic comments with id ${id}: `, error);
       return res.send(error.message);
     }
   }
 
-  async findQtdComments(req: Request, res: Response) {
-    const { id } = req.body;
+  /**
+   * Retorna a quantidade de comentários de um tópico especifico
+   */
+  async findQtdComments(req: Request, res: Response): Promise<Response<any, Record<string, any>>> {
+    const { id } = req.body as FindQtdCommentsInterface;
 
     try {
-      const commentslength = await CommentModel.count({
-        where: { postId: id },
+      const comments_length: number = await CommentModel.count({
+        where: { topic_id: id },
       });
 
-      return commentslength ? res.status(200).json(commentslength) : res.status(204).send("Nenhum comentário para contar");
+      return comments_length ? res.status(200).json(comments_length) : res.status(204).send("Nenhum comentário para contar");
     } catch (error: any) {
-      console.error("Erro ao contar qtd de comentários: ", error);
+      console.error(`Error counting number of topic comments with id ${id}: `, error);
       return res.send(error.message);
     }
   }
 
-  async getTweet(req: Request, res: Response) {
-    const { url } = req.body;
+  /**
+   * Retorna dados de um tweet a partir de uma url
+   */
+  async getTweet(req: Request, res: Response): Promise<Response<any, Record<string, any>>> {
+    const { url } = req.body as GetTweetInterface;
 
     try {
-      const response = await axios.get(url);
-      const encodedHtmlResponse = encodeURIComponent(response.data.html);
-      return res.send(encodedHtmlResponse);
+      const response: AxiosResponse = await axios.get(url);
+      const encoded_html_response: string = encodeURIComponent(response.data.html);
+      return res.send(encoded_html_response);
     } catch (error: any) {
-      console.error("Erro ao buscar tweet", error);
+      console.error(`Error finding tweet with url ${url}: `, error);
       return res.send(error.message);
     }
   }

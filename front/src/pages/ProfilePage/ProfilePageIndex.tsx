@@ -1,6 +1,6 @@
 import NavbarComponent from "../generalComponents/Navbar/NavbarComponent";
-import { Profile } from "./components/Profile";
-import "./profileIndexStyles.css";
+import Profile from "./components/Profile";
+import "./profilePageIndexStyle.css";
 
 const ProfilePage = () => {
   const links: { href: string; text: string }[] = [
