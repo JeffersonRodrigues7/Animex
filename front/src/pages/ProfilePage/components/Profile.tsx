@@ -10,22 +10,18 @@ const Profile = () => {
   const [profileImage, setProfileImage] = useState("");
   const { id, user } = useContext(AuthContext);
 
-  useEffect(() => {
-    async function getUser(): Promise<void> {
-      if (id) {
-        try {
-          const res_user: AxiosResponse = await apiFindUserById(id);
-          const base64Flag: string = "data:image/jpg;base64,";
-          const b64Image: string = Buffer.from(res_user.data.user.profile_image.data).toString();
-          setProfileImage(base64Flag + b64Image);
-        } catch (error: any) {
-          console.error(`Error returning data from user ${user}: `, error);
-        }
+  const updateImageProfile = async () => {
+    if (id) {
+      try {
+        const res_user: AxiosResponse = await apiFindUserById(id);
+        const base64Flag: string = "data:image/jpg;base64,";
+        const b64Image: string = Buffer.from(res_user.data.user.profile_image.data).toString();
+        setProfileImage(base64Flag + b64Image);
+      } catch (error: any) {
+        console.error(`Error returning data from user ${user}: `, error);
       }
     }
-
-    getUser();
-  }, []);
+  };
 
   const handlePicture = async (e: React.ChangeEvent<HTMLElement>): Promise<void> => {
     const new_image_input: HTMLInputElement = e.target as HTMLInputElement;
@@ -37,10 +33,15 @@ const Profile = () => {
 
     try {
       const res_form_data: AxiosResponse = await apiUpdatedProfile(form_data);
+      updateImageProfile();
     } catch (error: any) {
       console.error(`Error updating profile image from user ${user}: `, error);
     }
   };
+
+  useEffect(() => {
+    updateImageProfile();
+  }, []);
 
   return (
     <Container id="container_topics" className="mt-5">
