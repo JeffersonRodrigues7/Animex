@@ -86,9 +86,9 @@ const Comment = () => {
     socket.on("update_topic", (data: CommentsModelInterface) => {
       let pagination_ul: HTMLElement = document.getElementById("pagination_ul")!;
       let pagination_last_li = pagination_ul.children[pagination_ul?.children.length - 1];
+      //console.log(data.text);
       if (data.topic_id === Number(topicId) && pagination_last_li.classList.contains("active")) {
         fetchNewComment(data);
-        //console.log(data.text);
       }
     });
   }, [socket]);

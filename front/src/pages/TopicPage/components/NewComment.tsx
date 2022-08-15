@@ -51,8 +51,10 @@ const NewComment = ({ topic_id, user_id, hide_text_area, setHideTextArea, new_co
 
     try {
       const comment_result = await apiCreateComment(final_content, user_id, topic_id);
+      //console.log(comment_result);
       if (comment_result.status === 201) {
-        socket.emit("new_message", comment_result.data);
+        //console.log(comment_result);
+        await socket.emit("new_message", comment_result.data);
         //console.log("Mensagem criada: ", comment_result.data);
         await apiUpdatedTopic(topic_id, user!);
       } else {

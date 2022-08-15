@@ -96,7 +96,6 @@ const RegisterForm = () => {
     const email_used: boolean = await verifyEmailUsed(email);
 
     setShow(true);
-    setVariant("danger");
     if (!user_used && !email_used) {
       const access_level = 0;
       const biography = "";
@@ -106,8 +105,8 @@ const RegisterForm = () => {
         //Se o registro foi feito com sucesso, então vamos fazer o login
         const res_login: number = await login!(email, values.password);
         if (res_login === 0) {
-          setVariant("success");
-          setText("Usuário cadastrado com sucesso, você será redirecionado para a tela principal");
+          //setVariant("success");
+          //setText("Usuário cadastrado com sucesso, você será redirecionado para a tela principal");
         } else {
           setVariant("warning");
           setText("Usuário cadastrado com sucesso, porém, houve uma falha ao logar");
@@ -119,9 +118,16 @@ const RegisterForm = () => {
     }
 
     //E-mail ou nome de usuário já está em uso
-    else if (!user_used && email_used) setText("Email já em uso");
-    else if (user_used && !email_used) setText("Nome de usuário já em uso");
-    else setText("Email e nome de usuário já em uso");
+    else if (!user_used && email_used) {
+      setVariant("danger");
+      setText("Email já em uso");
+    } else if (user_used && !email_used) {
+      setVariant("danger");
+      setText("Nome de usuário já em uso");
+    } else {
+      setVariant("danger");
+      setText("Email e nome de usuário já em uso");
+    }
   };
 
   return (
