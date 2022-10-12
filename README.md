@@ -39,7 +39,7 @@ Atualmente vídeos do youtube, posts do instagram, status do twitter e imagens s
 - MySQL & Sequelize
 - React
 - HTML & CSS
-- Boostrap
+- Bootstrap
 
 ## Rodando o projeto
 
